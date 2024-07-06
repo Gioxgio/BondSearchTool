@@ -1,6 +1,6 @@
 package it.gagagio.bondsearchtool.controller;
 
-import it.gagagio.bondsearchtool.ScraperService;
+import it.gagagio.bondsearchtool.service.ScraperService;
 import it.gagagio.bondsearchtool.controller.model.RefreshRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

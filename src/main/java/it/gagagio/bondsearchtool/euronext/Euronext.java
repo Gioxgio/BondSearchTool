@@ -2,7 +2,7 @@ package it.gagagio.bondsearchtool.euronext;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.gagagio.bondsearchtool.BondMapper;
+import it.gagagio.bondsearchtool.model.BondMapper;
 import it.gagagio.bondsearchtool.euronext.model.BondIssuerRegion;
 import it.gagagio.bondsearchtool.euronext.model.BondIssuerType;
 import it.gagagio.bondsearchtool.euronext.model.BondResponse;
