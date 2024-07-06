@@ -1,13 +1,11 @@
-package it.gagagio.bondsearchtool;
+package it.gagagio.bondsearchtool.model;
 
 import it.gagagio.bondsearchtool.euronext.model.BondIssuerRegion;
-import it.gagagio.bondsearchtool.model.Bond;
-import it.gagagio.bondsearchtool.model.BondIssuerCountry;
 import lombok.val;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -60,14 +58,14 @@ public class BondMapper {
         return executeRegex(row, regex);
     }
 
-    private LocalDate getMaturityAtFromData(final List<String> data) {
+    private Instant getMaturityAtFromData(final List<String> data) {
 
         val row = data.get(3);
         val regex = ">([^<]*)<";
 
         val date = executeRegex(row, regex);
 
-        return date.equals("-") ? null : LocalDate.parse(date);
+        return date.equals("-") ? null : Instant.parse(date + "T00:00:00Z");
     }
 
     private int getCouponFromData(final List<String> data) {

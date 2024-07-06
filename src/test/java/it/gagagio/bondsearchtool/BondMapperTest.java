@@ -1,10 +1,11 @@
 package it.gagagio.bondsearchtool;
 
 import it.gagagio.bondsearchtool.euronext.model.BondIssuerRegion;
+import it.gagagio.bondsearchtool.model.BondMapper;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 import static it.gagagio.bondsearchtool.model.BondIssuerCountry.AT;
@@ -25,7 +26,7 @@ class BondMapperTest {
         assertEquals("AT0000A39UW5-MOTX", result.id());
         assertEquals("AUSTRIA FX 2.9% FEB34 EUR", result.name());
         assertEquals("MOTX", result.market());
-        assertEquals(LocalDate.parse("2034-02-20"), result.maturityAt());
+        assertEquals(Instant.parse("2034-02-20T00:00:00Z"), result.maturityAt());
         assertEquals(123, result.coupon());
         assertEquals(9860, result.lastPrice());
         assertEquals(AT, result.country());
