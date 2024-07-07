@@ -28,12 +28,14 @@ public class BondEntity {
     private String name;
     private String market;
     private Instant maturityAt;
-    private int coupon;
-    private int lastPrice;
+    private Integer coupon;
+    private Integer lastPrice;
     @Enumerated(EnumType.STRING)
     private BondIssuerCountry country;
     @Enumerated(EnumType.STRING)
     private BondIssuerRegion region;
+    @Column(name = "yield_to_maturity")
+    private Integer yieldToMaturity;
     @CreatedDate
     private Instant createdAt;
     @LastModifiedDate

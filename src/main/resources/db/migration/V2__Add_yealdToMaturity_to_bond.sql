@@ -1,0 +1,1 @@
+ALTER TABLE bond ADD yield_to_maturity INTEGER;
