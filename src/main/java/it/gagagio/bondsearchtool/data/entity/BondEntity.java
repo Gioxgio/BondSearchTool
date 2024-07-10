@@ -9,6 +9,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 
@@ -26,6 +28,7 @@ import java.time.Instant;
 @Entity(name = "bond")
 @EntityListeners({AuditingEntityListener.class})
 @Getter
+@IdClass(BondEntityPrimaryKey.class)
 @NoArgsConstructor
 @Setter
 public class BondEntity {
@@ -48,4 +51,12 @@ public class BondEntity {
     private Instant createdAt;
     @LastModifiedDate
     private Instant lastModifiedAt;
+}
+
+@Getter
+@Setter
+class BondEntityPrimaryKey implements Serializable {
+    private String isin;
+    private String market;
+
 }
