@@ -33,6 +33,7 @@ public class BondEntity {
     @Id
     private String id;
     private String name;
+    @Id
     private String market;
     private Instant maturityAt;
     private Integer coupon;
