@@ -31,7 +31,7 @@ import java.time.Instant;
 public class BondEntity {
 
     @Id
-    private String id;
+    private String isin;
     private String name;
     @Id
     private String market;

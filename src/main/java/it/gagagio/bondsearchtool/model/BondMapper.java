@@ -22,7 +22,7 @@ public class BondMapper {
         val country = getCountryFromData(data);
 
         return Bond.builder()
-                .id(id)
+                .isin(id)
                 .name(name)
                 .market(market)
                 .maturityAt(maturityAt)

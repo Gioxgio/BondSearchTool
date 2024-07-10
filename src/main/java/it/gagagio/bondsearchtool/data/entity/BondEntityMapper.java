@@ -9,7 +9,7 @@ public class BondEntityMapper {
     public BondEntity getBondEntityFromBond(final Bond bond) {
 
         return BondEntity.builder()
-                .id(bond.id())
+                .isin(bond.isin())
                 .name(bond.name())
                 .market(bond.market())
                 .maturityAt(bond.maturityAt())

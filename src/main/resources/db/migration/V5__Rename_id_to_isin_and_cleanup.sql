@@ -1,0 +1,2 @@
+ALTER TABLE bond RENAME COLUMN id TO isin;
+UPDATE bond SET isin=SUBSTRING(isin,1,12) WHERE LENGTH(isin)>12;

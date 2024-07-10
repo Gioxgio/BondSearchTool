@@ -21,7 +21,7 @@ class BondMapperTest {
 
         val result = unitToTest.getBondFromData(response);
 
-        assertEquals("AT0000A39UW5-MOTX", result.id());
+        assertEquals("AT0000A39UW5-MOTX", result.isin());
         assertEquals("AUSTRIA FX 2.9% FEB34 EUR", result.name());
         assertEquals("MOTX", result.market());
         assertEquals(Instant.parse("2034-02-20T00:00:00Z"), result.maturityAt());
