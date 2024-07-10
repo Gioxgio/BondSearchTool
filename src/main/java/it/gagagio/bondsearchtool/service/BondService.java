@@ -28,8 +28,7 @@ public class BondService {
 
     private void calculateYieldToMaturity(final BondEntity bond) {
 
-        val isin = bond.getIsin().split("-")[0];
-        val yieldToMaturity = borsaItaliana.getYieldToMaturity(isin, bond.getMarket());
+        val yieldToMaturity = borsaItaliana.getYieldToMaturity(bond.getIsin(), bond.getMarket());
 
         bond.setYieldToMaturity(yieldToMaturity);
     }

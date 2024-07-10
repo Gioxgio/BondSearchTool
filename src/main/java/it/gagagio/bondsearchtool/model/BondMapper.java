@@ -13,7 +13,7 @@ public class BondMapper {
 
     public Bond getBondFromData(final List<String> data) {
 
-        val id = getIdFromData(data);
+        val isin = getIsinFromData(data);
         val name = getNameFromData(data);
         val market = getMarketFromData(data);
         val maturityAt = getMaturityAtFromData(data);
@@ -22,7 +22,7 @@ public class BondMapper {
         val country = getCountryFromData(data);
 
         return Bond.builder()
-                .isin(id)
+                .isin(isin)
                 .name(name)
                 .market(market)
                 .maturityAt(maturityAt)
@@ -32,10 +32,10 @@ public class BondMapper {
                 .build();
     }
 
-    private String getIdFromData(final List<String> data) {
+    private String getIsinFromData(final List<String> data) {
 
         val row = data.getFirst();
-        val regex = "href='[^']*/([^']*)'";
+        val regex = "/bonds/(.*?)-";
 
         return executeRegex(row, regex);
     }
