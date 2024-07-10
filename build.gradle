@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.squareup.okhttp3:okhttp'
+    implementation 'org.jsoup:jsoup:1.17.2'
     runtimeOnly 'org.flywaydb:flyway-mysql'
     runtimeOnly 'com.mysql:mysql-connector-j'
     testAnnotationProcessor 'org.projectlombok:lombok'
