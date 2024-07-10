@@ -1,6 +1,5 @@
 package it.gagagio.bondsearchtool;
 
-import it.gagagio.bondsearchtool.euronext.model.BondIssuerRegion;
 import it.gagagio.bondsearchtool.model.BondMapper;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -18,10 +17,9 @@ class BondMapperTest {
     @Test
     void getBondFromData_success() {
 
-        val region = BondIssuerRegion.EUROPE;
         val response = getResponse();
 
-        val result = unitToTest.getBondFromData(response, region);
+        val result = unitToTest.getBondFromData(response);
 
         assertEquals("AT0000A39UW5-MOTX", result.id());
         assertEquals("AUSTRIA FX 2.9% FEB34 EUR", result.name());
@@ -30,7 +28,6 @@ class BondMapperTest {
         assertEquals(123, result.coupon());
         assertEquals(9860, result.lastPrice());
         assertEquals(AT, result.country());
-        assertEquals(region, result.region());
     }
 
     private List<String> getResponse() {

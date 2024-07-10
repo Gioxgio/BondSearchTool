@@ -1,0 +1,1 @@
+ALTER TABLE bond MODIFY region VARCHAR(255);

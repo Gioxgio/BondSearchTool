@@ -1,6 +1,5 @@
 package it.gagagio.bondsearchtool.model;
 
-import it.gagagio.bondsearchtool.euronext.model.BondIssuerRegion;
 import lombok.val;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,7 @@ import java.util.regex.Pattern;
 @Component
 public class BondMapper {
 
-    public Bond getBondFromData(final List<String> data, final BondIssuerRegion region) {
+    public Bond getBondFromData(final List<String> data) {
 
         val id = getIdFromData(data);
         val name = getNameFromData(data);
@@ -30,7 +29,6 @@ public class BondMapper {
                 .coupon(coupon)
                 .lastPrice(lastPrice)
                 .country(country)
-                .region(region)
                 .build();
     }
 

@@ -2,11 +2,9 @@ package it.gagagio.bondsearchtool.euronext;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.gagagio.bondsearchtool.model.BondMapper;
-import it.gagagio.bondsearchtool.euronext.model.BondIssuerRegion;
-import it.gagagio.bondsearchtool.euronext.model.BondIssuerType;
 import it.gagagio.bondsearchtool.euronext.model.BondResponse;
 import it.gagagio.bondsearchtool.model.Bond;
+import it.gagagio.bondsearchtool.model.BondMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import okhttp3.FormBody;
@@ -30,7 +28,7 @@ public class Euronext {
 
     private final BondMapper bondMapper;
 
-    public List<Bond> refresh(BondIssuerRegion region, BondIssuerType type) {
+    public List<Bond> refresh() {
 
         var page = 0;
         var totalRecords = 0;
@@ -38,7 +36,7 @@ public class Euronext {
 
         do {
 
-            val responseOptional = getBonds(region, type, page);
+            val responseOptional = getBonds(page);
 
             if (responseOptional.isEmpty()) {
                 return bonds;
@@ -49,7 +47,7 @@ public class Euronext {
 
             totalRecords = response.iTotalDisplayRecords();
 
-            bonds.addAll(data.stream().map(d -> bondMapper.getBondFromData(d, region)).toList());
+            bonds.addAll(data.stream().map(d -> bondMapper.getBondFromData(d)).toList());
 
             page++;
         } while (LENGTH * page < totalRecords);
@@ -57,12 +55,12 @@ public class Euronext {
         return bonds;
     }
 
-    private Optional<BondResponse> getBonds(BondIssuerRegion region, BondIssuerType type, int page) {
+    private Optional<BondResponse> getBonds(final int page) {
 
         val urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL)).newBuilder();
         urlBuilder.addQueryParameter("mics", String.join(",", MARKETS));
 
-        val body = getBondsBody(region, type, page);
+        val body = getBondsBody(page);
 
         val request = new Request.Builder()
                 .url(urlBuilder.build())
@@ -78,11 +76,9 @@ public class Euronext {
         }
     }
 
-    private FormBody getBondsBody(BondIssuerRegion region, BondIssuerType type, int page) {
+    private FormBody getBondsBody(final int page) {
 
         return new FormBody.Builder()
-                .add("args[bondIssuerRegion]", String.valueOf(region.getId()))
-                .add("args[bondIssuerType]", String.valueOf(type.getId()))
                 .add("iDisplayLength", String.valueOf(LENGTH))
                 .add("iDisplayStart", String.valueOf(LENGTH * page))
                 .add("sSortDir_0", "asc").build();
