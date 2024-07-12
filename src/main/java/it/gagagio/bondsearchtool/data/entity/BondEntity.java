@@ -2,7 +2,7 @@ package it.gagagio.bondsearchtool.data.entity;
 
 
 import it.gagagio.bondsearchtool.euronext.model.BondIssuerRegion;
-import it.gagagio.bondsearchtool.model.BondIssuerCountry;
+import it.gagagio.bondsearchtool.euronext.model.BondIssuerCountry;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

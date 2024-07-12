@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gagagio.bondsearchtool.euronext.model.BondResponse;
 import it.gagagio.bondsearchtool.model.Bond;
-import it.gagagio.bondsearchtool.model.BondMapper;
+import it.gagagio.bondsearchtool.euronext.model.BondMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import okhttp3.FormBody;

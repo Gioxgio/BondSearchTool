@@ -1,4 +1,4 @@
-package it.gagagio.bondsearchtool.model;
+package it.gagagio.bondsearchtool.euronext.model;
 
 import lombok.RequiredArgsConstructor;
 

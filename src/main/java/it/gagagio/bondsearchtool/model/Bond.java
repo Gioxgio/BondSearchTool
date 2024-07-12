@@ -1,5 +1,6 @@
 package it.gagagio.bondsearchtool.model;
 
+import it.gagagio.bondsearchtool.euronext.model.BondIssuerCountry;
 import it.gagagio.bondsearchtool.euronext.model.BondIssuerRegion;
 import lombok.Builder;
 

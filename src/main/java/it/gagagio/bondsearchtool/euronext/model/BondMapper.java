@@ -1,5 +1,6 @@
-package it.gagagio.bondsearchtool.model;
+package it.gagagio.bondsearchtool.euronext.model;
 
+import it.gagagio.bondsearchtool.model.Bond;
 import lombok.val;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;

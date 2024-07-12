@@ -1,13 +1,13 @@
 package it.gagagio.bondsearchtool;
 
-import it.gagagio.bondsearchtool.model.BondMapper;
+import it.gagagio.bondsearchtool.euronext.model.BondMapper;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
 
-import static it.gagagio.bondsearchtool.model.BondIssuerCountry.AT;
+import static it.gagagio.bondsearchtool.euronext.model.BondIssuerCountry.AT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BondMapperTest {
