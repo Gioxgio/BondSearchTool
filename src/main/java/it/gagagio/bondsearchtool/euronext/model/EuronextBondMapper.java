@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Component
-public class BondMapper {
+public class EuronextBondMapper {
 
     public Bond getBondFromData(final List<String> data) {
 

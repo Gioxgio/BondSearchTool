@@ -3,8 +3,8 @@ package it.gagagio.bondsearchtool.euronext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gagagio.bondsearchtool.euronext.model.BondResponse;
+import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
 import it.gagagio.bondsearchtool.model.Bond;
-import it.gagagio.bondsearchtool.euronext.model.BondMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import okhttp3.FormBody;
@@ -26,7 +26,7 @@ public class Euronext {
     private static final int LENGTH = 7000;
     private static final List<String> MARKETS = List.of("ALXB", "ALXL", "ALXP", "XPAR", "XAMS", "XBRU", "XLIS", "XMLI", "MLXB", "ENXB", "ENXL", "TNLA", "TNLB", "XLDN", "XHFT", "VPXB", "XOSL", "XOAM", "EXGM", "ETLX", "MOTX", "XMOT");
 
-    private final BondMapper bondMapper;
+    private final EuronextBondMapper euronextBondMapper;
 
     public List<Bond> refresh() {
 
@@ -47,7 +47,7 @@ public class Euronext {
 
             totalRecords = response.iTotalDisplayRecords();
 
-            bonds.addAll(data.stream().map(d -> bondMapper.getBondFromData(d)).toList());
+            bonds.addAll(data.stream().map(euronextBondMapper::getBondFromData).toList());
 
             page++;
         } while (LENGTH * page < totalRecords);
