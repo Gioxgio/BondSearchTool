@@ -18,18 +18,8 @@ public class BorsaItaliana {
 
     public int getYieldToMaturity(final String isin, final String market) {
 
-        val borsa = switch (market) {
-            case "ETLX" -> "eurotlx";
-            case "MOTX" -> "mot";
-            case "XMOT" -> "extramot";
-            default -> "";
-        };
-
-        val url = switch (market) {
-            case "ETLX" -> URL_TEMPLATE_ETLX.formatted(isin);
-            case "MOTX", "XMOT" -> URL_TEMPLATE_MOTX_XMOT.formatted(borsa);
-            default -> "";
-        };
+        val tab = "rendimenti-effettivi";
+        val url = getUrlFromMarket(tab, isin, market);
 
         val urlBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
         urlBuilder.addQueryParameter("isin", isin);
@@ -48,7 +38,28 @@ public class BorsaItaliana {
         }
     }
 
-    public int getYieldToMaturityFromHtml(final String html) {
+    private String getBorsaFromMarket(final String market) {
+
+        return switch (market) {
+            case "ETLX" -> "eurotlx";
+            case "MOTX" -> "mot";
+            case "XMOT" -> "extramot";
+            default -> "";
+        };
+    }
+
+    private String getUrlFromMarket(final String tab, final String isin, final String market) {
+
+        val borsa = getBorsaFromMarket(market);
+
+        return switch (market) {
+            case "ETLX" -> URL_TEMPLATE_ETLX.formatted(isin, tab);
+            case "MOTX", "XMOT" -> URL_TEMPLATE_MOTX_XMOT.formatted(borsa, tab);
+            default -> "";
+        };
+    }
+
+    private int getYieldToMaturityFromHtml(final String html) {
 
         val number = Jsoup.parse(html)
                 .select("table.m-table tr td:contains(Rendimento effettivo a scadenza lordo) + td")
