@@ -19,7 +19,7 @@ public class BondService {
 
     public void calculateYieldToMaturity() {
 
-        val bonds = bondRepository.findByYieldToMaturityIsNullAndMarketIn(Set.of("MOTX", "XMOT"), Limit.of(100));
+        val bonds = bondRepository.findByYieldToMaturityIsNullAndMarketIn(Set.of("ETLX", "MOTX", "XMOT"), Limit.of(100));
 
         bonds.forEach(this::calculateYieldToMaturity);
 
