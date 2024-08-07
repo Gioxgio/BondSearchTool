@@ -11,6 +11,12 @@ public class Scheduler {
 
     private final BondService bondService;
 
+    @Scheduled(fixedDelay = 100)
+    public void enrichBonds() {
+
+        bondService.enrichBonds();
+    }
+
     @Scheduled(fixedDelay = 10000)
     public void getYieldToMaturity() {
 

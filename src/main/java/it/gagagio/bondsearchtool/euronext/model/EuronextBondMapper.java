@@ -1,9 +1,12 @@
 package it.gagagio.bondsearchtool.euronext.model;
 
 import it.gagagio.bondsearchtool.model.Bond;
+import it.gagagio.bondsearchtool.model.BondType;
 import lombok.val;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,6 +34,26 @@ public class EuronextBondMapper {
                 .lastPrice(lastPrice)
                 .country(country)
                 .build();
+    }
+
+    public String getIssuerNameFromHtml(final Document html) {
+
+        return select(html, ".issuerName-column-right > strong:nth-child(1)");
+    }
+
+    public BondType getIssuerTypeFromIssuerName(final String issuerName) {
+
+        if (issuerName.toLowerCase().contains("repub")
+                || issuerName.toLowerCase().contains("kingd")
+                || issuerName.toLowerCase().contains("united s")) {
+
+            return BondType.GOVERNMENT;
+        } else if (StringUtils.hasText(issuerName)) {
+
+            return BondType.CORPORATE;
+        }
+
+        return BondType.OTHERS;
     }
 
     private String getIsinFromData(final List<String> data) {
@@ -105,5 +128,10 @@ public class EuronextBondMapper {
         val matcher = pattern.matcher(s);
 
         return matcher.find() ? matcher.group(1) : "";
+    }
+
+    private String select(final Document html, final String path) {
+
+        return html.select(path).text().trim();
     }
 }
