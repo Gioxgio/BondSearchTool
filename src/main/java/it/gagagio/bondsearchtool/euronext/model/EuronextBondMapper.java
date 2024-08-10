@@ -33,6 +33,7 @@ public class EuronextBondMapper {
                 .coupon(coupon)
                 .lastPrice(lastPrice)
                 .country(country)
+                .type(BondType.OTHERS)
                 .build();
     }
 
