@@ -1,25 +1,41 @@
 package it.gagagio.bondsearchtool.scheduler;
 
-import it.gagagio.bondsearchtool.service.BondService;
+import it.gagagio.bondsearchtool.data.entity.JobEntity;
+import it.gagagio.bondsearchtool.data.repository.JobRepository;
+import it.gagagio.bondsearchtool.scheduler.runners.JobRunner;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.time.Instant;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class Scheduler {
 
-    private final BondService bondService;
+    private final JobRepository jobRepository;
+    private final List<JobRunner> jobRunners;
 
-    @Scheduled(fixedDelay = 100)
-    public void enrichBonds() {
+    @Scheduled(fixedDelay = 5000)
+    public void executeJobs() {
 
-        bondService.enrichBonds(100);
+        val jobs = jobRepository.findAllByNextExecutionDateBefore(Instant.now());
+
+        jobs.forEach(this::processJob);
     }
 
-    @Scheduled(fixedDelay = 10000)
-    public void getYieldToMaturity() {
+    private void processJob(final JobEntity job) {
+        val runnerOptional = jobRunners.stream().filter(j -> j.match(job.getType())).findFirst();
+        if (runnerOptional.isEmpty()) {
+            return;
+        }
+        val runner = runnerOptional.get();
 
-        bondService.calculateYieldToMaturity(100);
+        System.out.println("Running job " + job.getId() + " " + job.getType());
+        val updatedJob = runner.run(job);
+        updatedJob.setLastExecutionDate(Instant.now());
+        jobRepository.save(updatedJob);
     }
 }
