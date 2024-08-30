@@ -18,7 +18,7 @@ public class ScraperService {
     private final BondRepository bondRepository;
 
     @Transactional
-    public int refresh() {
+    public void refresh() {
 
         val bonds = euronext.refresh();
         val bondEntities = bonds.stream().map(bondEntityMapper::getBondEntityFromBond).toList();
@@ -31,6 +31,6 @@ public class ScraperService {
 
         bondRepository.removeByIsinIn(outdatedBondEntities);
 
-        return bondRepository.saveAllAndFlush(newBondEntities).size();
+        bondRepository.saveAllAndFlush(newBondEntities);
     }
 }

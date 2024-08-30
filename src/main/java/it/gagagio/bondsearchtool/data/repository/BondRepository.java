@@ -23,6 +23,5 @@ public interface BondRepository extends JpaRepository<BondEntity, String> {
     @Query("SELECT b FROM bond b WHERE b.type = 'GOVERNMENT' AND b.yieldToMaturity IS NOT NULL AND b.yieldToMaturity > 0")
     List<BondEntity> findValidCorporateBonds();
 
-    int removeByIsinIn(final Collection<String> isins);
+    void removeByIsinIn(final Collection<String> isins);
 }
-

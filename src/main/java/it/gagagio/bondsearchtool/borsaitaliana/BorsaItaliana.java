@@ -9,13 +9,14 @@ import org.jsoup.Jsoup;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class BorsaItaliana {
 
     private final String URL_TEMPLATE = "https://www.borsaitaliana.it/borsa/obbligazioni/%s/rendimenti-effettivi.html";
 
-    public int getYieldToMaturity(final String isin, final String market) {
+    public Optional<Integer> getYieldToMaturity(final String isin, final String market) {
 
         val url = getUrlFromMarket(market);
 
@@ -32,7 +33,7 @@ public class BorsaItaliana {
         try (val responseBody = client.newCall(request).execute().body()) {
             return getYieldToMaturityFromHtml(responseBody.string());
         } catch (Exception e) {
-            return 0;
+            return Optional.empty();
         }
     }
 
@@ -48,12 +49,13 @@ public class BorsaItaliana {
         return URL_TEMPLATE.formatted(borsa);
     }
 
-    private int getYieldToMaturityFromHtml(final String html) {
+    private Optional<Integer> getYieldToMaturityFromHtml(final String html) {
 
         val number = Jsoup.parse(html)
                 .select("table.m-table tr td:contains(Rendimento effettivo a scadenza lordo) + td")
                 .text().trim().replace(",", "");
 
-        return NumberUtils.toInt(number, 0);
+        return NumberUtils.isCreatable(number) ?
+                Optional.of(NumberUtils.createInteger(number)) : Optional.empty();
     }
 }

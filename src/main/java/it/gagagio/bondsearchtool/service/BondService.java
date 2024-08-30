@@ -10,6 +10,7 @@ import lombok.val;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -51,8 +52,7 @@ public class BondService {
 
         val yieldToMaturity = borsaItaliana.getYieldToMaturity(bond.getIsin(), bond.getMarket());
 
-        if (yieldToMaturity != 0) {
-            bond.setYieldToMaturity(yieldToMaturity);
-        }
+        yieldToMaturity.ifPresent(bond::setYieldToMaturity);
+        bond.setLastModifiedAt(Instant.now());
     }
 }
