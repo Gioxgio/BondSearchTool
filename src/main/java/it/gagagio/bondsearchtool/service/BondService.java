@@ -25,22 +25,26 @@ public class BondService {
         return bondRepository.findValidCorporateBonds();
     }
 
-    public void calculateYieldToMaturity() {
+    public int calculateYieldToMaturity(final int pageSize) {
 
-        val bonds = bondRepository.findBondsWithWrongYieldToMaturity(Set.of(/*"ETLX", "MOTX",*/ "XMOT"), Limit.of(100));
+        val bonds = bondRepository.findBondsWithWrongYieldToMaturity(Set.of("ETLX", "MOTX", "XMOT"), Limit.of(pageSize));
 
         bonds.forEach(this::calculateYieldToMaturity);
 
         bondRepository.saveAll(bonds);
+
+        return bonds.size();
     }
 
-    public void enrichBonds() {
+    public int enrichBonds(final int pageSize) {
 
-        val bonds = bondRepository.findByTypeIsNullOrTypeEquals(BondType.OTHERS, Limit.of(100));
+        val bonds = bondRepository.findByTypeIsNullOrTypeEquals(BondType.OTHERS, Limit.of(pageSize));
 
         bonds.forEach(euronext::enrichBond);
 
         bondRepository.saveAll(bonds);
+
+        return bonds.size();
     }
 
     private void calculateYieldToMaturity(final BondEntity bond) {

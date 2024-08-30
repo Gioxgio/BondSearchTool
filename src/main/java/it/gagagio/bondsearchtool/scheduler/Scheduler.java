@@ -14,12 +14,12 @@ public class Scheduler {
     @Scheduled(fixedDelay = 100)
     public void enrichBonds() {
 
-        bondService.enrichBonds();
+        bondService.enrichBonds(100);
     }
 
     @Scheduled(fixedDelay = 10000)
     public void getYieldToMaturity() {
 
-        bondService.calculateYieldToMaturity();
+        bondService.calculateYieldToMaturity(100);
     }
 }
