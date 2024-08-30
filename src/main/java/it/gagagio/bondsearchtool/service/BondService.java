@@ -22,7 +22,7 @@ public class BondService {
 
     public void calculateYieldToMaturity() {
 
-        val bonds = bondRepository.findByYieldToMaturityIsNullAndMarketIn(Set.of("ETLX", "MOTX", "XMOT"), Limit.of(100));
+        val bonds = bondRepository.findBondsWithWrongYieldToMaturity(Set.of(/*"ETLX", "MOTX",*/ "XMOT"), Limit.of(100));
 
         bonds.forEach(this::calculateYieldToMaturity);
 
@@ -42,6 +42,8 @@ public class BondService {
 
         val yieldToMaturity = borsaItaliana.getYieldToMaturity(bond.getIsin(), bond.getMarket());
 
-        bond.setYieldToMaturity(yieldToMaturity);
+        if (yieldToMaturity != 0) {
+            bond.setYieldToMaturity(yieldToMaturity);
+        }
     }
 }

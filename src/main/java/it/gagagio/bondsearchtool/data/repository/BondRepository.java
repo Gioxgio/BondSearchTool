@@ -15,7 +15,8 @@ public interface BondRepository extends JpaRepository<BondEntity, String> {
     @Query("SELECT DISTINCT(b.isin) FROM bond b")
     Set<String> findAllIsins();
 
-    List<BondEntity> findByYieldToMaturityIsNullAndMarketIn(final Collection<String> markets, final Limit limit);
+    @Query("SELECT b FROM bond b WHERE b.market IN (:markets) AND (b.yieldToMaturity IS NULL OR b.yieldToMaturity = 0 OR b.lastModifiedAt < NOW() - '25' HOUR)")
+    List<BondEntity> findBondsWithWrongYieldToMaturity(final Collection<String> markets, final Limit limit);
 
     List<BondEntity> findByTypeIsNullOrTypeEquals(final BondType type, final Limit limit);
 

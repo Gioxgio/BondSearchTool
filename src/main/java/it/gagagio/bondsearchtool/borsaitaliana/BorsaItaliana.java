@@ -13,13 +13,11 @@ import java.util.Objects;
 @Component
 public class BorsaItaliana {
 
-    private final String URL_TEMPLATE_ETLX = "https://www.borsaitaliana.it/borsa/obbligazioni/eurotlx/scheda/%s.html";
-    private final String URL_TEMPLATE_MOTX_XMOT = "https://www.borsaitaliana.it/borsa/obbligazioni/%s/euro-obbligazioni/rendimenti-effettivi.html";
+    private final String URL_TEMPLATE = "https://www.borsaitaliana.it/borsa/obbligazioni/%s/rendimenti-effettivi.html";
 
     public int getYieldToMaturity(final String isin, final String market) {
 
-        val tab = "rendimenti-effettivi";
-        val url = getUrlFromMarket(tab, isin, market);
+        val url = getUrlFromMarket(market);
 
         val urlBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
         urlBuilder.addQueryParameter("isin", isin);
@@ -38,25 +36,16 @@ public class BorsaItaliana {
         }
     }
 
-    private String getBorsaFromMarket(final String market) {
+    private String getUrlFromMarket(final String market) {
 
-        return switch (market) {
+        val borsa = switch (market) {
             case "ETLX" -> "eurotlx";
-            case "MOTX" -> "mot";
+            case "MOTX" -> "mot/euro-obbligazioni";
             case "XMOT" -> "extramot";
             default -> "";
         };
-    }
 
-    private String getUrlFromMarket(final String tab, final String isin, final String market) {
-
-        val borsa = getBorsaFromMarket(market);
-
-        return switch (market) {
-            case "ETLX" -> URL_TEMPLATE_ETLX.formatted(isin, tab);
-            case "MOTX", "XMOT" -> URL_TEMPLATE_MOTX_XMOT.formatted(borsa, tab);
-            default -> "";
-        };
+        return URL_TEMPLATE.formatted(borsa);
     }
 
     private int getYieldToMaturityFromHtml(final String html) {
