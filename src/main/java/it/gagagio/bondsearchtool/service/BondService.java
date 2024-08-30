@@ -10,6 +10,7 @@ import lombok.val;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -19,6 +20,10 @@ public class BondService {
     private final BondRepository bondRepository;
     private final BorsaItaliana borsaItaliana;
     private final Euronext euronext;
+
+    public List<BondEntity> getBonds() {
+        return bondRepository.findValidCorporateBonds();
+    }
 
     public void calculateYieldToMaturity() {
 
