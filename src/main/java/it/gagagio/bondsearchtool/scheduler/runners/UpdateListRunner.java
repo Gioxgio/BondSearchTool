@@ -19,7 +19,7 @@ public class UpdateListRunner implements JobRunner {
     @Override
     public JobEntity run(JobEntity job) {
 
-        scraperService.refresh();
+        scraperService.updateBondList();
 
         job.setNextExecutionDate(Instant.now().plus(JobConstants.ONE_DAY, ChronoUnit.SECONDS));
 

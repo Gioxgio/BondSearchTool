@@ -20,7 +20,7 @@ public class ScraperService {
     private final BondRepository bondRepository;
 
     @Transactional
-    public void refresh() {
+    public void updateBondList() {
 
         log.info("Getting bonds from Euronext");
         val bonds = euronext.getBondsList();
