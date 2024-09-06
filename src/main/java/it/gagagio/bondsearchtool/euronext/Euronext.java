@@ -3,11 +3,12 @@ package it.gagagio.bondsearchtool.euronext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
-import it.gagagio.bondsearchtool.euronext.model.EuronextIssuerCountry;
 import it.gagagio.bondsearchtool.euronext.model.BondResponse;
 import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
+import it.gagagio.bondsearchtool.euronext.model.EuronextIssuerCountry;
 import it.gagagio.bondsearchtool.model.Bond;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class Euronext {
 
     private static final String BASE_URL = "https://live.euronext.com/en/";
@@ -32,7 +34,7 @@ public class Euronext {
 
     private final EuronextBondMapper euronextBondMapper;
 
-    public List<Bond> refresh() {
+    public List<Bond> getBondsList() {
 
         var page = 0;
         var totalRecords = 0;
@@ -54,6 +56,7 @@ public class Euronext {
             bonds.addAll(data.stream().map(euronextBondMapper::toBond).toList());
 
             page++;
+            log.debug("{}/{}", bonds.size(), totalRecords);
         } while (LENGTH * page < totalRecords);
 
         return bonds;

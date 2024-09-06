@@ -4,6 +4,7 @@ import it.gagagio.bondsearchtool.data.entity.JobEntity;
 import it.gagagio.bondsearchtool.data.repository.JobRepository;
 import it.gagagio.bondsearchtool.scheduler.runners.JobRunner;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class Scheduler {
 
     private final JobRepository jobRepository;
@@ -33,9 +35,10 @@ public class Scheduler {
         }
         val runner = runnerOptional.get();
 
-        System.out.println("Running job " + job.getId() + " " + job.getType());
+        log.info("Running job {} {}", job.getId(), job.getType());
         val updatedJob = runner.run(job);
         updatedJob.setLastExecutionDate(Instant.now());
         jobRepository.save(updatedJob);
+        log.info("Rescheduling job {} {} to {}", job.getId(), job.getType(), job.getNextExecutionDate());
     }
 }
