@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
-public enum BondIssuerCountry {
+public enum EuronextIssuerCountry {
     AR("REPUBLIC OF ARGENTINA"),
     AT("REPUBLIC OF AUSTRIA"),
     BE("KINGDOM OF BELGIUM"),
@@ -48,14 +48,13 @@ public enum BondIssuerCountry {
     TR("REPUBLIC OF TURKEY"),
     US("UNITED STATES OF AMERICA"),
     UK("UNITED KINGDOM"),
-    ZA("REPUBLIC OF SOUTH AFRICA"),
-    OTHERS("OTHERS");
+    ZA("REPUBLIC OF SOUTH AFRICA");
 
     private final String name;
 
-    public static BondIssuerCountry valueFrom(final String s) {
+    public static EuronextIssuerCountry valueFrom(final String s) {
         return Arrays.stream(values())
                 .filter(v -> v.name.equals(s))
-                .findFirst().orElse(OTHERS);
+                .findFirst().orElse(null);
     }
 }

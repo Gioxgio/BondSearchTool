@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.List;
 
-import static it.gagagio.bondsearchtool.euronext.model.BondIssuerCountry.AT;
+import static it.gagagio.bondsearchtool.euronext.model.EuronextIssuerCountry.AT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EuronextBondMapperTest {
@@ -15,11 +15,11 @@ class EuronextBondMapperTest {
     private final EuronextBondMapper unitToTest = new EuronextBondMapper();
 
     @Test
-    void getBondFromData_success() {
+    void toBond_success() {
 
         val response = getResponse();
 
-        val result = unitToTest.getBondFromData(response);
+        val result = unitToTest.toBond(response);
 
         assertEquals("AT0000A39UW5", result.isin());
         assertEquals("AUSTRIA FX 2.9% FEB34 EUR", result.name());

@@ -3,7 +3,7 @@ package it.gagagio.bondsearchtool.euronext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
-import it.gagagio.bondsearchtool.euronext.model.BondIssuerCountry;
+import it.gagagio.bondsearchtool.euronext.model.EuronextIssuerCountry;
 import it.gagagio.bondsearchtool.euronext.model.BondResponse;
 import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
 import it.gagagio.bondsearchtool.model.Bond;
@@ -51,7 +51,7 @@ public class Euronext {
 
             totalRecords = response.iTotalDisplayRecords();
 
-            bonds.addAll(data.stream().map(euronextBondMapper::getBondFromData).toList());
+            bonds.addAll(data.stream().map(euronextBondMapper::toBond).toList());
 
             page++;
         } while (LENGTH * page < totalRecords);
@@ -72,7 +72,7 @@ public class Euronext {
 
         val issuerName = euronextBondMapper.getIssuerNameFromHtml(html.get());
         val bondType = euronextBondMapper.getIssuerTypeFromIssuerName(issuerName);
-        val country = BondIssuerCountry.valueFrom(issuerName);
+        val country = EuronextIssuerCountry.valueFrom(issuerName);
 
         bond.setCountry(country);
         bond.setType(bondType);

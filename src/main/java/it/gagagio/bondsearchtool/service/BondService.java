@@ -4,7 +4,6 @@ import it.gagagio.bondsearchtool.borsaitaliana.BorsaItaliana;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import it.gagagio.bondsearchtool.data.repository.BondRepository;
 import it.gagagio.bondsearchtool.euronext.Euronext;
-import it.gagagio.bondsearchtool.model.BondType;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.data.domain.Limit;
@@ -39,7 +38,7 @@ public class BondService {
 
     public int enrichBonds(final int pageSize) {
 
-        val bonds = bondRepository.findByTypeIsNullOrTypeEquals(BondType.OTHERS, Limit.of(pageSize));
+        val bonds = bondRepository.findByTypeIsNull(Limit.of(pageSize));
 
         bonds.forEach(euronext::enrichBond);
 
