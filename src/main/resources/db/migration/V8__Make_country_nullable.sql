@@ -1,0 +1,1 @@
+ALTER TABLE bond MODIFY country VARCHAR(10);
