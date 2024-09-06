@@ -16,7 +16,6 @@ public class BondEntityMapper {
                 .coupon(bond.coupon())
                 .lastPrice(bond.lastPrice())
                 .country(bond.country())
-                .region(bond.region())
                 .type(bond.type())
                 .build();
     }

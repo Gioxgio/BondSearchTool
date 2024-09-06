@@ -1,0 +1,1 @@
+ALTER TABLE bond DROP COLUMN region;
