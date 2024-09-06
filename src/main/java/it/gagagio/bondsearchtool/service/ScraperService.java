@@ -21,7 +21,7 @@ public class ScraperService {
     public void refresh() {
 
         val bonds = euronext.refresh();
-        val bondEntities = bonds.stream().map(bondEntityMapper::getBondEntityFromBond).toList();
+        val bondEntities = bonds.stream().map(bondEntityMapper::fromBond).toList();
 
         val newIsins = bondEntities.stream().map(BondEntity::getIsin).toList();
         val existingIsins = bondRepository.findAllIsins();

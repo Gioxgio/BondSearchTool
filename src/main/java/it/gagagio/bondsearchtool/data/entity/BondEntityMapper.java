@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BondEntityMapper {
 
-    public BondEntity getBondEntityFromBond(final Bond bond) {
+    public BondEntity fromBond(final Bond bond) {
 
         return BondEntity.builder()
                 .isin(bond.isin())
