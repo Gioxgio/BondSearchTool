@@ -22,7 +22,7 @@ public class BondService {
     private final Euronext euronext;
 
     public List<BondEntity> getBonds() {
-        return bondRepository.findValidCorporateBonds();
+        return bondRepository.findValidGovernmentBonds();
     }
 
     public int calculateYieldToMaturity(final int pageSize) {
