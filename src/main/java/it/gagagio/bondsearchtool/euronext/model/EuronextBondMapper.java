@@ -1,12 +1,11 @@
 package it.gagagio.bondsearchtool.euronext.model;
 
 import it.gagagio.bondsearchtool.model.Bond;
-import it.gagagio.bondsearchtool.model.BondType;
+import it.gagagio.bondsearchtool.model.BondCountry;
 import lombok.val;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.List;
@@ -24,7 +23,6 @@ public class EuronextBondMapper {
         val maturityAt = getMaturityAtFromData(data);
         val coupon = getCouponFromData(data);
         val lastPrice = getLastPriceFromData(data);
-        val country = getCountryFromData(data);
 
         return Bond.builder()
                 .isin(isin)
@@ -33,29 +31,21 @@ public class EuronextBondMapper {
                 .maturityAt(maturityAt)
                 .coupon(coupon)
                 .lastPrice(lastPrice)
-                .country(country)
-                .type(null)
                 .build();
     }
 
-    public String getIssuerNameFromHtml(final Document html) {
+    public Optional<BondCountry> getCountryFromHtml(final Document html) {
 
-        return select(html, ".issuerName-column-right > strong:nth-child(1)");
+        val country = select(html, "p:nth-child(3) > strong");
+
+        return BondCountry.from(country);
     }
 
-    public BondType getIssuerTypeFromIssuerName(final String issuerName) {
+    public Optional<EuronextType> getTypeFromHtml(final Document html) {
 
-        if (issuerName.toLowerCase().contains("repub")
-                || issuerName.toLowerCase().contains("kingd")
-                || issuerName.toLowerCase().contains("united s")) {
+        val subtype = select(html, "tr:nth-child(2) .font-weight-bold");
 
-            return BondType.GOVERNMENT;
-        } else if (StringUtils.hasText(issuerName)) {
-
-            return BondType.CORPORATE;
-        }
-
-        return null;
+        return EuronextType.from(subtype);
     }
 
     private String getIsinFromData(final List<String> data) {
@@ -113,16 +103,6 @@ public class EuronextBondMapper {
                 .map(r -> r.replace(".", "").replace(",", ""))
                 .filter(NumberUtils::isCreatable)
                 .map(NumberUtils::toInt)
-                .orElse(null);
-    }
-
-    private EuronextIssuerCountry getCountryFromData(final List<String> data) {
-
-        val row = data.get(1);
-        val regex = "^(.*?)(</div>)$";
-
-        return executeRegex(row, regex)
-                .map(EuronextIssuerCountry::valueFrom)
                 .orElse(null);
     }
 

@@ -1,14 +1,18 @@
 package it.gagagio.bondsearchtool.euronext;
 
 import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
+import it.gagagio.bondsearchtool.euronext.model.EuronextType;
+import it.gagagio.bondsearchtool.model.BondCountry;
 import lombok.val;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
 
-import static it.gagagio.bondsearchtool.euronext.model.EuronextIssuerCountry.AT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EuronextBondMapperTest {
 
@@ -17,7 +21,7 @@ class EuronextBondMapperTest {
     @Test
     void toBond_success() {
 
-        val response = getResponse();
+        val response = getListEntry();
 
         val result = unitToTest.toBond(response);
 
@@ -27,10 +31,31 @@ class EuronextBondMapperTest {
         assertEquals(Instant.parse("2034-02-20T00:00:00Z"), result.maturityAt());
         assertEquals(123, result.coupon());
         assertEquals(9860, result.lastPrice());
-        assertEquals(AT, result.country());
     }
 
-    private List<String> getResponse() {
+    @Test
+    void getCountryFromHtml_success() {
+
+        val html = getIssuerInfo();
+
+        val result = unitToTest.getCountryFromHtml(html);
+
+        assertTrue(result.isPresent());
+        assertEquals(BondCountry.FR, result.get());
+    }
+
+    @Test
+    void getTypeFromHtml_success() {
+
+        val html = getInfo();
+
+        val result = unitToTest.getTypeFromHtml(html);
+
+        assertTrue(result.isPresent());
+        assertEquals(EuronextType.CORPORATE, result.get());
+    }
+
+    private List<String> getListEntry() {
         return List.of(
                 "<a href='/en/product/bonds/AT0000A39UW5-MOTX' data-order='AU FX FEB34 EUR' data-title-hover='AUSTRIA FX 2.9% FEB34 EUR'>AU FX FEB34 EUR</a>",
                 "REPUBLIC OF AUSTRIA</div>",
@@ -44,5 +69,71 @@ class EuronextBondMapperTest {
                 "<div class=\"text-right nowrap\">45.000M</div>",
                 "<div class=\"text-right nowrap\">REPUBLIC OF AUSTRIA</div>"
         );
+    }
+
+    private Document getInfo() {
+
+        return Jsoup.parse("""
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="nowrap">General Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table__group table-sm table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td class='text-left'>
+                                            Type
+                                        </td>
+                                        <td class='text-left font-weight-bold '>
+                                            Medium-term notes
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class='text-left'>
+                                            Sub type
+                                        </td>
+                                        <td class='text-left font-weight-bold '>Covered Bonds</td>
+                                    </tr>
+                                    <tr>
+                                        <td class='text-left'>
+                                            Market</td>
+                                        <td class='text-left font-weight-bold '>Euronext Paris</td>
+                                    </tr>
+                                    <tr>
+                                        <td class='text-left'>
+                                            ISIN Code
+                                        </td>
+                                        <td class='text-left font-weight-bold '>
+                                            FR0013396355
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class='text-left'>
+                                            Euronext Code
+                                        </td>
+                                        <td class='text-left font-weight-bold '>
+                                            NSCFR00DXBS1
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                """);
+    }
+
+    private Document getIssuerInfo() {
+        return Jsoup.parse("""
+                    <div class="card">
+                      <div class="card-header">
+                        <h3>Issuer Information</h3>
+                      </div>
+                      <div class="card-body">
+                        <p class="issuerName-row"><span class="issuerName-column-left">Issuer name : </span> <span class="issuerName-column-right"><strong>CAISSE FSE FINANCEMENT LOCAL</strong></span></p>        <p>Issuer Type :  <strong>Other</strong></p>        <p>Issuer country :  <strong>FRA</strong></p>      </div>
+                    </div>
+                """);
     }
 }

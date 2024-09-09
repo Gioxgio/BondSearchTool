@@ -1,7 +1,7 @@
 package it.gagagio.bondsearchtool.data.entity;
 
 
-import it.gagagio.bondsearchtool.euronext.model.EuronextIssuerCountry;
+import it.gagagio.bondsearchtool.model.BondCountry;
 import it.gagagio.bondsearchtool.model.BondType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +42,7 @@ public class BondEntity {
     private Integer coupon;
     private Integer lastPrice;
     @Enumerated(EnumType.STRING)
-    private EuronextIssuerCountry country;
+    private BondCountry country;
     @Column(name = "yield_to_maturity")
     private Integer yieldToMaturity;
     @Enumerated(EnumType.STRING)

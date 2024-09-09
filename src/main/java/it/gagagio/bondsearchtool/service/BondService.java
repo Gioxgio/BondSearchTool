@@ -38,7 +38,7 @@ public class BondService {
 
     public int enrichBonds(final int pageSize) {
 
-        val bonds = bondRepository.findByTypeIsNull(Limit.of(pageSize));
+        val bonds = bondRepository.findByTypeIsNullOrCountryIsNull(Limit.of(pageSize));
 
         bonds.forEach(euronext::enrichBond);
 

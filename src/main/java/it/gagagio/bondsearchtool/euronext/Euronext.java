@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import it.gagagio.bondsearchtool.euronext.model.BondResponse;
 import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
-import it.gagagio.bondsearchtool.euronext.model.EuronextIssuerCountry;
 import it.gagagio.bondsearchtool.model.Bond;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,18 +66,17 @@ public class Euronext {
         val isin = bond.getIsin();
         val market = bond.getMarket();
 
-        val html = getIssuerInfo(isin, market);
-
-        if (html.isEmpty()) {
-            return;
+        if (bond.getType() == null) {
+            val info = getInfo(isin, market);
+            info.flatMap(euronextBondMapper::getTypeFromHtml)
+                    .ifPresent(type -> bond.setType(type.toBontType()));
         }
 
-        val issuerName = euronextBondMapper.getIssuerNameFromHtml(html.get());
-        val bondType = euronextBondMapper.getIssuerTypeFromIssuerName(issuerName);
-        val country = EuronextIssuerCountry.valueFrom(issuerName);
-
-        bond.setCountry(country);
-        bond.setType(bondType);
+        if (bond.getCountry() == null) {
+            val issuerInfo = getIssuerInfo(isin, market);
+            issuerInfo.flatMap(euronextBondMapper::getCountryFromHtml)
+                    .ifPresent(bond::setCountry);
+        }
     }
 
     private Optional<BondResponse> getBonds(final int page) {
@@ -102,9 +100,24 @@ public class Euronext {
         }
     }
 
-    private Optional<Document> getIssuerInfo(final String isin, final String market) {
+    private Optional<Document> getInfo(final String isin, final String market) {
+        val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_info_block".formatted(BASE_URL, isin, market);
+        return executeGet(url);
+    }
 
+    private Optional<Document> getIssuerInfo(final String isin, final String market) {
         val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_issuerinfo_block".formatted(BASE_URL, isin, market);
+        return executeGet(url);
+    }
+
+    private FormBody getBondsBody(final int page) {
+        return new FormBody.Builder()
+                .add("iDisplayLength", String.valueOf(LENGTH))
+                .add("iDisplayStart", String.valueOf(LENGTH * page))
+                .add("sSortDir_0", "asc").build();
+    }
+
+    private Optional<Document> executeGet(final String url) {
 
         val urlBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
 
@@ -117,15 +130,8 @@ public class Euronext {
         try (val responseBody = client.newCall(request).execute().body()) {
             return Optional.of(Jsoup.parse(responseBody.string()));
         } catch (Exception e) {
+            log.error("Error {} retrieving url: {}", e.getMessage(), url);
             return Optional.empty();
         }
-    }
-
-    private FormBody getBondsBody(final int page) {
-
-        return new FormBody.Builder()
-                .add("iDisplayLength", String.valueOf(LENGTH))
-                .add("iDisplayStart", String.valueOf(LENGTH * page))
-                .add("sSortDir_0", "asc").build();
     }
 }
