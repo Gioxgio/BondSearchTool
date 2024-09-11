@@ -1,1 +1,4 @@
 spring.application.name: BondSearchTool
+server:
+  address: 0.0.0.0
+  port: ${PORT}
