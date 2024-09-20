@@ -13,6 +13,7 @@ public class BondEntityMapper {
                 .name(bond.name())
                 .market(bond.market())
                 .maturityAt(bond.maturityAt())
+                .perpetual(bond.perpetual())
                 .coupon(bond.coupon())
                 .lastPrice(bond.lastPrice())
                 .country(bond.country())

@@ -39,6 +39,7 @@ public class BondEntity {
     @Id
     private String market;
     private Instant maturityAt;
+    private boolean perpetual;
     private Integer coupon;
     private Integer lastPrice;
     @Enumerated(EnumType.STRING)
