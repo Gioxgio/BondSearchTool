@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class UpdateListRunner implements JobRunner {
 
         scraperService.updateBondList();
 
-        job.setNextExecutionDate(Instant.now().plus(JobConstants.ONE_DAY, ChronoUnit.SECONDS));
+        job.setNextExecutionDate(Instant.now().plusSeconds(JobConstants.ONE_DAY));
 
         return job;
     }

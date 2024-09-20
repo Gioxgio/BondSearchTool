@@ -9,7 +9,6 @@ import lombok.val;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class UpdateStaticFieldsRunner implements JobRunner {
 
         val nextExecutionInterval = savedBondsSize < pageSize ? JobConstants.ONE_DAY : JobConstants.FIVE_SECONDS;
 
-        job.setNextExecutionDate(Instant.now().plus(nextExecutionInterval, ChronoUnit.SECONDS));
+        job.setNextExecutionDate(Instant.now().plusSeconds(nextExecutionInterval));
 
         return job;
     }
