@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EuronextBondMapperTest {
@@ -42,6 +43,26 @@ class EuronextBondMapperTest {
 
         assertTrue(result.isPresent());
         assertEquals(BondCountry.FR, result.get());
+    }
+
+    @Test
+    void getPerpetualFromHtml_perpetual() {
+
+        val html = getInstrumentInfo_perpetual();
+
+        val result = unitToTest.getPerpetualFromHtml(html);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void getPerpetualFromHtml_not_perpetual() {
+
+        val html = getInstrumentInfo_not_perpetual();
+
+        val result = unitToTest.getPerpetualFromHtml(html);
+
+        assertFalse(result);
     }
 
     @Test
@@ -118,6 +139,104 @@ class EuronextBondMapperTest {
                                         </td>
                                     </tr>
                                 </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                """);
+    }
+
+    private Document getInstrumentInfo_perpetual() {
+        return Jsoup.parse("""
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Instrument Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table__group table-sm table-hover">
+                                <tr>
+                                    <td>Issue Price</td>
+                                    <td>
+                                        <strong>100.0</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Total number</td>
+                                    <td>
+                                        <strong>2,500</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Denomination</td>
+                                    <td>
+                                        <strong>200000</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Issue Date</td>
+                                    <td>
+                                        <strong>01/02/2018</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Repayment type</td>
+                                    <td>
+                                        <strong>Perpetual bond</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                """);
+    }
+
+    private Document getInstrumentInfo_not_perpetual() {
+        return Jsoup.parse("""
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Instrument Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table__group table-sm table-hover">
+                                <tr>
+                                    <td>Issue Price</td>
+                                    <td>
+                                        <strong>99.882</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Total number</td>
+                                    <td>
+                                        <strong>45,000,000</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Denomination</td>
+                                    <td>
+                                        <strong>100</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Issue Date</td>
+                                    <td>
+                                        <strong>04/09/2024</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Repayment date</td>
+                                    <td>
+                                        <strong>20/10/2029</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Repayment type</td>
+                                    <td>
+                                        <strong>In fine</strong>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                     </div>

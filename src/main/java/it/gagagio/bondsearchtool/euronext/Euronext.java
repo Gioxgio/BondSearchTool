@@ -77,6 +77,14 @@ public class Euronext {
             issuerInfo.flatMap(euronextBondMapper::getCountryFromHtml)
                     .ifPresent(bond::setCountry);
         }
+
+        if (bond.getMaturityAt() == null && !bond.isPerpetual()) {
+            val instrumentInfo = getInstrumentInfo(isin, market);
+            instrumentInfo.ifPresent(html -> {
+                val perpetual = euronextBondMapper.getPerpetualFromHtml(html);
+                bond.setPerpetual(perpetual);
+            });
+        }
     }
 
     private Optional<BondResponse> getBonds(final int page) {
@@ -96,12 +104,18 @@ public class Euronext {
             val objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             return Optional.of(objectMapper.readValue(responseBody.string(), BondResponse.class));
         } catch (Exception e) {
+            log.error("Error {} retrieving url: {}", e.getMessage(), urlBuilder.build());
             return Optional.empty();
         }
     }
 
     private Optional<Document> getInfo(final String isin, final String market) {
         val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_info_block".formatted(BASE_URL, isin, market);
+        return executeGet(url);
+    }
+
+    private Optional<Document> getInstrumentInfo(final String isin, final String market) {
+        val url = "%sajax/getFactsheetInfoBlock/aBONDS/%s-%s/fs_instrumentinfo_block".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 

@@ -41,6 +41,14 @@ public class EuronextBondMapper {
         return BondCountry.from(country);
     }
 
+    public boolean getPerpetualFromHtml(final Document html) {
+
+        val PERPETUALS = List.of("Indeterminate", "Perpetual bond");
+        val repaymentType = select(html, "tr:contains(Repayment type) strong");
+
+        return PERPETUALS.contains(repaymentType);
+    }
+
     public Optional<EuronextType> getTypeFromHtml(final Document html) {
 
         val subtype = select(html, "tr:nth-child(2) .font-weight-bold");
