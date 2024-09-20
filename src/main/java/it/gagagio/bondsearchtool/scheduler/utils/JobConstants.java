@@ -2,6 +2,9 @@ package it.gagagio.bondsearchtool.scheduler.utils;
 
 public class JobConstants {
 
-    public final static int ONE_DAY = 24 * 60 * 60;
-    public static final int FIVE_SECONDS = 5;
+    public static final int PAGE_SIZE = 500;
+
+    //Intervals
+    public static final int ONE_DAY = 24 * 60 * 60;
+    public static final int TEN_SECONDS = 10;
 }

@@ -19,11 +19,9 @@ public class UpdateStaticFieldsRunner implements JobRunner {
     @Override
     public JobEntity run(JobEntity job) {
 
-        val pageSize = 100;
+        val savedBondsSize = bondService.enrichBonds(JobConstants.PAGE_SIZE);
 
-        val savedBondsSize = bondService.enrichBonds(100);
-
-        val nextExecutionInterval = savedBondsSize < pageSize ? JobConstants.ONE_DAY : JobConstants.FIVE_SECONDS;
+        val nextExecutionInterval = savedBondsSize < JobConstants.PAGE_SIZE ? JobConstants.ONE_DAY : JobConstants.TEN_SECONDS;
 
         job.setNextExecutionDate(Instant.now().plusSeconds(nextExecutionInterval));
 
