@@ -83,6 +83,10 @@ public class Euronext {
             instrumentInfo.ifPresent(html -> {
                 val perpetual = euronextBondMapper.getPerpetualFromHtml(html);
                 bond.setPerpetual(perpetual);
+                if (!perpetual) {
+                    euronextBondMapper.getMaturityAtFromHtml(html)
+                            .ifPresent(bond::setMaturityAt);
+                }
             });
         }
     }

@@ -29,7 +29,6 @@ class EuronextBondMapperTest {
         assertEquals("AT0000A39UW5", result.isin());
         assertEquals("AUSTRIA FX 2.9% FEB34 EUR", result.name());
         assertEquals("MOTX", result.market());
-        assertEquals(Instant.parse("2034-02-20T00:00:00Z"), result.maturityAt());
         assertEquals(123, result.coupon());
         assertEquals(9860, result.lastPrice());
     }
@@ -43,6 +42,17 @@ class EuronextBondMapperTest {
 
         assertTrue(result.isPresent());
         assertEquals(BondCountry.FR, result.get());
+    }
+
+    @Test
+    void getMaturityAtFromHtml_success() {
+
+        val html = getInstrumentInfo_not_perpetual();
+
+        val result = unitToTest.getMaturityAtFromHtml(html);
+
+        assertTrue(result.isPresent());
+        assertEquals(Instant.parse("2029-10-20T00:00:00Z"), result.get());
     }
 
     @Test
@@ -193,6 +203,58 @@ class EuronextBondMapperTest {
     }
 
     private Document getInstrumentInfo_not_perpetual() {
+        return Jsoup.parse("""
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Instrument Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table__group table-sm table-hover">
+                                <tr>
+                                    <td>Issue Price</td>
+                                    <td>
+                                        <strong>99.882</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Total number</td>
+                                    <td>
+                                        <strong>45,000,000</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Denomination</td>
+                                    <td>
+                                        <strong>100</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Issue Date</td>
+                                    <td>
+                                        <strong>04/09/2024</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Repayment date</td>
+                                    <td>
+                                        <strong>20/10/2029</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Repayment type</td>
+                                    <td>
+                                        <strong>In fine</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                """);
+    }
+
+    private Document getInstrumentInfo() {
         return Jsoup.parse("""
                 <div class="card">
                     <div class="card-header">
