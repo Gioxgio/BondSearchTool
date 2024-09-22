@@ -9,6 +9,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -26,23 +28,36 @@ public class EuronextBondMapper {
         val isin = getIsinFromData(data);
         val name = getNameFromData(data);
         val market = getMarketFromData(data);
-        val coupon = getCouponFromData(data);
         val lastPrice = getLastPriceFromData(data);
 
         return Bond.builder()
                 .isin(isin)
                 .name(name)
                 .market(market)
-                .coupon(coupon)
                 .lastPrice(lastPrice)
                 .build();
     }
 
-    public Optional<Instant> getMaturityAtFromHtml(final Document html) {
+    public Optional<Integer> getCouponFromHtml(final Document html) {
 
-        val maturityAt = select(html, "tr:contains(Repayment date) strong");
+        val frequency = getFrequencyFromHtml(html);
 
-        return stringDateToInstant(maturityAt);
+        if (frequency.isEmpty()) {
+            return Optional.empty();
+        }
+
+        val f = frequency.get();
+        if (EuronextFrequency.ZERO.equals(f)) {
+            return Optional.of(0);
+        }
+
+        val coupon = select(html, "tr:contains(Interest Rate):first-child strong");
+        val couponMillis = stringToIntegerMillis(coupon);
+
+        return couponMillis.map(c -> {
+            BigDecimal result = f.getMultiplier().multiply(c).divide(BigDecimal.valueOf(10), RoundingMode.HALF_UP);
+            return result.setScale(0, RoundingMode.HALF_UP).intValue();
+        });
     }
 
     public Optional<BondCountry> getCountryFromHtml(final Document html) {
@@ -50,6 +65,13 @@ public class EuronextBondMapper {
         val country = select(html, "p:nth-child(3) > strong");
 
         return BondCountry.from(country);
+    }
+
+    public Optional<Instant> getMaturityAtFromHtml(final Document html) {
+
+        val maturityAt = select(html, "tr:contains(Repayment date) strong");
+
+        return stringDateToInstant(maturityAt);
     }
 
     public boolean getPerpetualFromHtml(final Document html) {
@@ -65,6 +87,12 @@ public class EuronextBondMapper {
         val subtype = select(html, "tr:nth-child(2) .font-weight-bold");
 
         return EuronextType.from(subtype);
+    }
+
+    private Optional<EuronextFrequency> getFrequencyFromHtml(final Document html) {
+
+        val frequency = select(html, "tr:contains(Interest rate frequency) strong");
+        return EuronextFrequency.from(frequency);
     }
 
     private String getIsinFromData(final List<String> data) {
@@ -91,18 +119,6 @@ public class EuronextBondMapper {
         return executeRegex(row, regex).orElseThrow();
     }
 
-    private Integer getCouponFromData(final List<String> data) {
-
-        val row = data.get(4);
-        val regex = "(\\d+\\.\\d+)";
-
-        return executeRegex(row, regex)
-                .map(r -> r.replace(".", "").replace(",", ""))
-                .filter(NumberUtils::isCreatable)
-                .map(NumberUtils::toInt)
-                .orElse(null);
-    }
-
     private Integer getLastPriceFromData(final List<String> data) {
 
         val row = data.get(6);
@@ -113,6 +129,18 @@ public class EuronextBondMapper {
                 .filter(NumberUtils::isCreatable)
                 .map(NumberUtils::toInt)
                 .orElse(null);
+    }
+
+    private Optional<BigDecimal> stringToIntegerMillis(String s) {
+        s = s.replaceAll("%", "");
+
+        try {
+            val bdNumber = new BigDecimal(s);
+            return Optional.of(bdNumber.multiply(BigDecimal.valueOf(1000)));
+        } catch (Exception e) {
+            log.warn("Failing to parse string {} to int", s);
+            return Optional.empty();
+        }
     }
 
     private Optional<Instant> stringDateToInstant(final String s) {

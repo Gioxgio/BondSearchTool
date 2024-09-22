@@ -66,16 +66,17 @@ public class Euronext {
         val isin = bond.getIsin();
         val market = bond.getMarket();
 
-        if (bond.getType() == null) {
-            val info = getInfo(isin, market);
-            info.flatMap(euronextBondMapper::getTypeFromHtml)
-                    .ifPresent(type -> bond.setType(type.toBontType()));
-        }
-
         if (bond.getCountry() == null) {
             val issuerInfo = getIssuerInfo(isin, market);
             issuerInfo.flatMap(euronextBondMapper::getCountryFromHtml)
                     .ifPresent(bond::setCountry);
+        }
+
+        if (bond.getCoupon() == null) {
+            val couponInfo = getCouponInfo(isin, market);
+            System.out.println(isin);
+            couponInfo.flatMap(euronextBondMapper::getCouponFromHtml)
+                    .ifPresent(bond::setCoupon);
         }
 
         if (bond.getMaturityAt() == null && !bond.isPerpetual()) {
@@ -88,6 +89,12 @@ public class Euronext {
                             .ifPresent(bond::setMaturityAt);
                 }
             });
+        }
+
+        if (bond.getType() == null) {
+            val info = getInfo(isin, market);
+            info.flatMap(euronextBondMapper::getTypeFromHtml)
+                    .ifPresent(type -> bond.setType(type.toBontType()));
         }
     }
 
@@ -113,13 +120,18 @@ public class Euronext {
         }
     }
 
+    private Optional<Document> getCouponInfo(final String isin, final String market) {
+        val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_couponinfo_block".formatted(BASE_URL, isin, market);
+        return executeGet(url);
+    }
+
     private Optional<Document> getInfo(final String isin, final String market) {
         val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_info_block".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 
     private Optional<Document> getInstrumentInfo(final String isin, final String market) {
-        val url = "%sajax/getFactsheetInfoBlock/aBONDS/%s-%s/fs_instrumentinfo_block".formatted(BASE_URL, isin, market);
+        val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_instrumentinfo_block".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 

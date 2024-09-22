@@ -7,6 +7,8 @@ import lombok.val;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.Instant;
 import java.util.List;
@@ -31,6 +33,18 @@ class EuronextBondMapperTest {
         assertEquals("MOTX", result.market());
         assertEquals(123, result.coupon());
         assertEquals(9860, result.lastPrice());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"3,300", "3.1,310", "3.12,312", "3.127,313"})
+    void getCouponFromHtml_success(final String number, final int expected) {
+
+        val html = getCouponInfo(number);
+
+        val result = unitToTest.getCouponFromHtml(html);
+
+        assertTrue(result.isPresent());
+        assertEquals(expected, result.get());
     }
 
     @Test
@@ -100,6 +114,31 @@ class EuronextBondMapperTest {
                 "<div class=\"text-right nowrap\">45.000M</div>",
                 "<div class=\"text-right nowrap\">REPUBLIC OF AUSTRIA</div>"
         );
+    }
+
+    private Document getCouponInfo(final String number) {
+
+        return Jsoup.parse("""
+                <div class="card">
+                        <div class="card-header">
+                            <h3>Coupon Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table__group table-sm table-hover">
+                                    <tr>
+                                        <td>Interest Rate</td>
+                                        <td><strong>%s%%</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Interest rate frequency</td>
+                                        <td><strong>Annual</strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                """.formatted(number));
     }
 
     private Document getInfo() {
@@ -203,58 +242,6 @@ class EuronextBondMapperTest {
     }
 
     private Document getInstrumentInfo_not_perpetual() {
-        return Jsoup.parse("""
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Instrument Information</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table__group table-sm table-hover">
-                                <tr>
-                                    <td>Issue Price</td>
-                                    <td>
-                                        <strong>99.882</strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Total number</td>
-                                    <td>
-                                        <strong>45,000,000</strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Denomination</td>
-                                    <td>
-                                        <strong>100</strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Issue Date</td>
-                                    <td>
-                                        <strong>04/09/2024</strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Repayment date</td>
-                                    <td>
-                                        <strong>20/10/2029</strong>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Repayment type</td>
-                                    <td>
-                                        <strong>In fine</strong>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                """);
-    }
-
-    private Document getInstrumentInfo() {
         return Jsoup.parse("""
                 <div class="card">
                     <div class="card-header">
