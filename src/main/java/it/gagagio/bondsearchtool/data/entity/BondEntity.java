@@ -62,5 +62,4 @@ public class BondEntity {
 class BondEntityPrimaryKey implements Serializable {
     private String isin;
     private String market;
-
 }

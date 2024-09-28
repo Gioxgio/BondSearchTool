@@ -36,11 +36,11 @@ public class BondService {
         return bonds.size();
     }
 
-    public int enrichBonds(final int pageSize) {
+    public int updateStaticFields(final int pageSize) {
 
         val bonds = bondRepository.findByTypeIsNullOrCountryIsNullOrMaturityAtIsNullAndPerpetualIsFalseOrCouponIsNullAndErrorIsNull(Limit.of(pageSize));
 
-        bonds.forEach(euronext::enrichBond);
+        bonds.forEach(euronext::updateStaticFields);
 
         bondRepository.saveAll(bonds);
 

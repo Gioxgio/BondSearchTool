@@ -62,16 +62,16 @@ public class Euronext {
         return bonds;
     }
 
-    public void enrichBond(final BondEntity bond) {
+    public void updateStaticFields(final BondEntity bond) {
 
         val isin = bond.getIsin();
         val market = bond.getMarket();
 
         if (bond.getCountry() == null) {
             val issuerInfo = getIssuerInfo(isin, market);
-            val countryOptional = issuerInfo.flatMap(euronextBondMapper::getCountryFromHtml);
-            if (countryOptional.isPresent()) {
-                bond.setCountry(countryOptional.get());
+            val country = issuerInfo.flatMap(euronextBondMapper::getCountryFromHtml);
+            if (country.isPresent()) {
+                bond.setCountry(country.get());
             } else {
                 bond.setError(BondField.COUNTRY);
                 return;
@@ -80,9 +80,9 @@ public class Euronext {
 
         if (bond.getCoupon() == null) {
             val couponInfo = getCouponInfo(isin, market);
-            val couponOptional = couponInfo.flatMap(euronextBondMapper::getCouponFromHtml);
-            if (couponOptional.isPresent()) {
-                bond.setCoupon(couponOptional.get());
+            val coupon = couponInfo.flatMap(euronextBondMapper::getCouponFromHtml);
+            if (coupon.isPresent()) {
+                bond.setCoupon(coupon.get());
             } else {
                 bond.setError(BondField.COUPON);
                 return;
@@ -96,9 +96,9 @@ public class Euronext {
                 val perpetual = euronextBondMapper.getPerpetualFromHtml(html);
                 bond.setPerpetual(perpetual);
                 if (!perpetual) {
-                    val maturityAtOptional = euronextBondMapper.getMaturityAtFromHtml(html);
-                    if (maturityAtOptional.isPresent()) {
-                        bond.setMaturityAt(maturityAtOptional.get());
+                    val maturityAt = euronextBondMapper.getMaturityAtFromHtml(html);
+                    if (maturityAt.isPresent()) {
+                        bond.setMaturityAt(maturityAt.get());
                     } else {
                         bond.setError(BondField.MATURITY_AT);
                         return;
@@ -109,9 +109,9 @@ public class Euronext {
 
         if (bond.getType() == null) {
             val info = getInfo(isin, market);
-            val typeOptional = info.flatMap(euronextBondMapper::getTypeFromHtml);
-            if (typeOptional.isPresent()) {
-                bond.setType(typeOptional.get().toBontType());
+            val type = info.flatMap(euronextBondMapper::getTypeFromHtml);
+            if (type.isPresent()) {
+                bond.setType(type.get().toBontType());
             } else {
                 bond.setError(BondField.TYPE);
                 return;
