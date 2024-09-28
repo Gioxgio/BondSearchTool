@@ -5,7 +5,6 @@ import it.gagagio.bondsearchtool.model.BondCountry;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
@@ -28,13 +27,11 @@ public class EuronextBondMapper {
         val isin = getIsinFromData(data);
         val name = getNameFromData(data);
         val market = getMarketFromData(data);
-        val lastPrice = getLastPriceFromData(data);
 
         return Bond.builder()
                 .isin(isin)
                 .name(name)
                 .market(market)
-                .lastPrice(lastPrice)
                 .build();
     }
 
@@ -65,6 +62,13 @@ public class EuronextBondMapper {
         val country = select(html, "p:nth-child(3) > strong");
 
         return BondCountry.from(country);
+    }
+
+    public Optional<Integer> getLastPriceFromHtml(final Document html) {
+
+        val lastPrice = select(html, "#header-instrument-price");
+
+        return stringToIntegerCents(lastPrice).map(lp -> lp.setScale(0, RoundingMode.HALF_UP).intValue());
     }
 
     public Optional<Instant> getMaturityAtFromHtml(final Document html) {
@@ -119,16 +123,16 @@ public class EuronextBondMapper {
         return executeRegex(row, regex).orElseThrow();
     }
 
-    private Integer getLastPriceFromData(final List<String> data) {
+    private Optional<BigDecimal> stringToIntegerCents(String s) {
+        s = s.replaceAll("%", "");
 
-        val row = data.get(6);
-        val regex = "(\\d+\\,\\d+)";
-
-        return executeRegex(row, regex)
-                .map(r -> r.replace(".", "").replace(",", ""))
-                .filter(NumberUtils::isCreatable)
-                .map(NumberUtils::toInt)
-                .orElse(null);
+        try {
+            val bdNumber = new BigDecimal(s);
+            return Optional.of(bdNumber.multiply(BigDecimal.valueOf(100)));
+        } catch (Exception e) {
+            log.warn("Failing to parse string {} to int", s);
+            return Optional.empty();
+        }
     }
 
     private Optional<BigDecimal> stringToIntegerMillis(String s) {

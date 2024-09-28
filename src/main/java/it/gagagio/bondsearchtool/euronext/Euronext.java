@@ -18,6 +18,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -117,6 +118,20 @@ public class Euronext {
                 return;
             }
         }
+
+        updateDynamicFields(bond);
+    }
+
+    public void updateDynamicFields(final BondEntity bond) {
+
+        val isin = bond.getIsin();
+        val market = bond.getMarket();
+
+        val detailedQuote = getDetailedQuote(isin, market);
+        detailedQuote.flatMap(euronextBondMapper::getLastPriceFromHtml)
+                .ifPresent(bond::setLastPrice);
+
+        bond.setLastModifiedAt(Instant.now());
     }
 
     private Optional<BondResponse> getBonds(final int page) {
@@ -143,6 +158,11 @@ public class Euronext {
 
     private Optional<Document> getCouponInfo(final String isin, final String market) {
         val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_couponinfo_block".formatted(BASE_URL, isin, market);
+        return executeGet(url);
+    }
+
+    private Optional<Document> getDetailedQuote(final String isin, final String market) {
+        val url = "%sajax/getDetailedQuote/%s-%s".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 

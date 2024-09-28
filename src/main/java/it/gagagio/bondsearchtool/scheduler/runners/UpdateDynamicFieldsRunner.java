@@ -19,7 +19,7 @@ public class UpdateDynamicFieldsRunner implements JobRunner {
     @Override
     public JobEntity run(JobEntity job) {
 
-        val savedBondsSize = bondService.calculateYieldToMaturity(JobConstants.PAGE_SIZE);
+        val savedBondsSize = bondService.updateDynamicFields(JobConstants.PAGE_SIZE);
 
         val nextExecutionInterval = savedBondsSize < JobConstants.PAGE_SIZE ? JobConstants.ONE_DAY : JobConstants.TEN_SECONDS;
 
