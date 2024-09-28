@@ -17,7 +17,7 @@ public interface BondRepository extends JpaRepository<BondEntity, String> {
     @Query("SELECT b FROM bond b WHERE b.market IN (:markets) AND (b.yieldToMaturity IS NULL OR b.yieldToMaturity = 0 OR b.lastModifiedAt < NOW() - '25' HOUR)")
     List<BondEntity> findBondsWithWrongYieldToMaturity(final Collection<String> markets, final Limit limit);
 
-    List<BondEntity> findByTypeIsNullOrCountryIsNullOrMaturityAtIsNullAndPerpetualIsFalseOrCouponIsNull(final Limit limit);
+    List<BondEntity> findByTypeIsNullOrCountryIsNullOrMaturityAtIsNullAndPerpetualIsFalseOrCouponIsNullAndErrorIsNull(final Limit limit);
 
 //    @Query("SELECT b FROM bond b WHERE b.type = 'GOVERNMENT' AND b.yieldToMaturity IS NOT NULL AND b.yieldToMaturity > 0")
     @Query("SELECT b FROM bond b")

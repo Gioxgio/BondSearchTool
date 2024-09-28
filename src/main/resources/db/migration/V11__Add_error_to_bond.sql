@@ -1,0 +1,1 @@
+ALTER TABLE bond ADD error VARCHAR(100);

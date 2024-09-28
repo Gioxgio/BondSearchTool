@@ -6,6 +6,7 @@ import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import it.gagagio.bondsearchtool.euronext.model.BondResponse;
 import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
 import it.gagagio.bondsearchtool.model.Bond;
+import it.gagagio.bondsearchtool.model.BondField;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -68,33 +69,53 @@ public class Euronext {
 
         if (bond.getCountry() == null) {
             val issuerInfo = getIssuerInfo(isin, market);
-            issuerInfo.flatMap(euronextBondMapper::getCountryFromHtml)
-                    .ifPresent(bond::setCountry);
+            val countryOptional = issuerInfo.flatMap(euronextBondMapper::getCountryFromHtml);
+            if (countryOptional.isPresent()) {
+                bond.setCountry(countryOptional.get());
+            } else {
+                bond.setError(BondField.COUNTRY);
+                return;
+            }
         }
 
         if (bond.getCoupon() == null) {
             val couponInfo = getCouponInfo(isin, market);
-            System.out.println(isin);
-            couponInfo.flatMap(euronextBondMapper::getCouponFromHtml)
-                    .ifPresent(bond::setCoupon);
+            val couponOptional = couponInfo.flatMap(euronextBondMapper::getCouponFromHtml);
+            if (couponOptional.isPresent()) {
+                bond.setCoupon(couponOptional.get());
+            } else {
+                bond.setError(BondField.COUPON);
+                return;
+            }
         }
 
         if (bond.getMaturityAt() == null && !bond.isPerpetual()) {
             val instrumentInfo = getInstrumentInfo(isin, market);
-            instrumentInfo.ifPresent(html -> {
+            if (instrumentInfo.isPresent()) {
+                val html = instrumentInfo.get();
                 val perpetual = euronextBondMapper.getPerpetualFromHtml(html);
                 bond.setPerpetual(perpetual);
                 if (!perpetual) {
-                    euronextBondMapper.getMaturityAtFromHtml(html)
-                            .ifPresent(bond::setMaturityAt);
+                    val maturityAtOptional = euronextBondMapper.getMaturityAtFromHtml(html);
+                    if (maturityAtOptional.isPresent()) {
+                        bond.setMaturityAt(maturityAtOptional.get());
+                    } else {
+                        bond.setError(BondField.MATURITY_AT);
+                        return;
+                    }
                 }
-            });
+            }
         }
 
         if (bond.getType() == null) {
             val info = getInfo(isin, market);
-            info.flatMap(euronextBondMapper::getTypeFromHtml)
-                    .ifPresent(type -> bond.setType(type.toBontType()));
+            val typeOptional = info.flatMap(euronextBondMapper::getTypeFromHtml);
+            if (typeOptional.isPresent()) {
+                bond.setType(typeOptional.get().toBontType());
+            } else {
+                bond.setError(BondField.TYPE);
+                return;
+            }
         }
     }
 
