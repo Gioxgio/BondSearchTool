@@ -7,6 +7,7 @@ import it.gagagio.bondsearchtool.euronext.model.BondResponse;
 import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
 import it.gagagio.bondsearchtool.model.Bond;
 import it.gagagio.bondsearchtool.model.BondField;
+import it.gagagio.bondsearchtool.scheduler.utils.YieldToMaturityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -34,6 +35,7 @@ public class Euronext {
     private static final List<String> MARKETS = List.of("ALXB", "ALXL", "ALXP", "XPAR", "XAMS", "XBRU", "XLIS", "XMLI", "MLXB", "ENXB", "ENXL", "TNLA", "TNLB", "XLDN", "XHFT", "VPXB", "XOSL", "XOAM", "EXGM", "ETLX", "MOTX", "XMOT");
 
     private final EuronextBondMapper euronextBondMapper;
+    private final YieldToMaturityUtils yieldToMaturityUtils;
 
     public List<Bond> getBondsList() {
 
@@ -128,8 +130,17 @@ public class Euronext {
         val market = bond.getMarket();
 
         val detailedQuote = getDetailedQuote(isin, market);
-        detailedQuote.flatMap(euronextBondMapper::getLastPriceFromHtml)
-                .ifPresent(bond::setLastPrice);
+        Optional<Integer> lastPrice = detailedQuote.flatMap(euronextBondMapper::getLastPriceFromHtml);
+
+        if (lastPrice.isPresent()) {
+
+            bond.setLastPrice(lastPrice.get());
+
+            if (!bond.isPerpetual()) {
+                yieldToMaturityUtils.calculateYieldToMaturity(Instant.now(), bond.getMaturityAt(), bond.getCoupon(), bond.getLastPrice())
+                        .ifPresent(bond::setYieldToMaturity);
+            }
+        }
 
         bond.setLastModifiedAt(Instant.now());
     }
