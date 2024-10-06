@@ -17,7 +17,12 @@ public interface BondRepository extends JpaRepository<BondEntity, String> {
 
     List<BondEntity> findByErrorIsNullAndLastModifiedAtLessThan(final Instant instant, final Limit limit);
 
-    List<BondEntity> findByTypeIsNullOrCountryIsNullOrMaturityAtIsNullAndPerpetualIsFalseOrCouponIsNullAndErrorIsNull(final Limit limit);
+    @Query("SELECT b FROM bond b WHERE" +
+            " (b.type IS NULL" +
+            " OR b.country IS NULL" +
+            " OR b.maturityAt IS NULL AND NOT b.perpetual)" +
+            " AND b.error IS NULL")
+    List<BondEntity> findBondsToUpdate(final Limit limit);
 
     // @Query("SELECT b FROM bond b WHERE b.type = 'GOVERNMENT' AND b.yieldToMaturity IS NOT NULL AND b.yieldToMaturity > 0")
     @Query("SELECT b FROM bond b")

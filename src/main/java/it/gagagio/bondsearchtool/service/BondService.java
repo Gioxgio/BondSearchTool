@@ -36,7 +36,7 @@ public class BondService {
 
     public int updateStaticFields(final int pageSize) {
 
-        val bonds = bondRepository.findByTypeIsNullOrCountryIsNullOrMaturityAtIsNullAndPerpetualIsFalseOrCouponIsNullAndErrorIsNull(Limit.of(pageSize));
+        val bonds = bondRepository.findBondsToUpdate(Limit.of(pageSize));
 
         bonds.forEach(euronext::updateStaticFields);
 
