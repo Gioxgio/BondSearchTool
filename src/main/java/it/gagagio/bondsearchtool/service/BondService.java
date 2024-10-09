@@ -27,11 +27,15 @@ public class BondService {
 
         val bonds = bondRepository.findByErrorIsNullAndLastModifiedAtLessThan(Instant.now().truncatedTo(ChronoUnit.DAYS), Limit.of(pageSize));
 
-        bonds.forEach(euronext::updateDynamicFields);
+        bonds.forEach(this::updateDynamicFields);
 
         bondRepository.saveAll(bonds);
 
         return bonds.size();
+    }
+
+    public void updateDynamicFields(final BondEntity bond) {
+        euronext.updateDynamicFields(bond);
     }
 
     public int updateStaticFields(final int pageSize) {

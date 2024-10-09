@@ -3,7 +3,6 @@ package it.gagagio.bondsearchtool.data.repository;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.Instant;
@@ -17,6 +16,8 @@ public interface BondRepository extends JpaRepository<BondEntity, String> {
     Set<String> findAllIsins();
 
     List<BondEntity> findByErrorIsNullAndLastModifiedAtLessThan(final Instant instant, final Limit limit);
+
+    Set<BondEntity> findByIsinIn(final Collection<String> isins);
 
     @Query("SELECT b FROM bond b WHERE" +
             " (b.type IS NULL" +
