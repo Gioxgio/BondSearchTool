@@ -7,7 +7,7 @@ import it.gagagio.bondsearchtool.euronext.model.BondResponse;
 import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
 import it.gagagio.bondsearchtool.model.Bond;
 import it.gagagio.bondsearchtool.model.BondField;
-import it.gagagio.bondsearchtool.scheduler.utils.YieldToMaturityUtils;
+import it.gagagio.bondsearchtool.utils.YieldToMaturityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;

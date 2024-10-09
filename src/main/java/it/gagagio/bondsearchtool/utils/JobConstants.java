@@ -1,4 +1,4 @@
-package it.gagagio.bondsearchtool.scheduler.utils;
+package it.gagagio.bondsearchtool.utils;
 
 public class JobConstants {
 

@@ -2,7 +2,7 @@ package it.gagagio.bondsearchtool.scheduler.runners;
 
 import it.gagagio.bondsearchtool.data.entity.JobEntity;
 import it.gagagio.bondsearchtool.model.JobType;
-import it.gagagio.bondsearchtool.scheduler.utils.JobConstants;
+import it.gagagio.bondsearchtool.utils.JobConstants;
 import it.gagagio.bondsearchtool.service.ScraperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

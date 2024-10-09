@@ -1,4 +1,4 @@
-package it.gagagio.bondsearchtool.scheduler.utils;
+package it.gagagio.bondsearchtool.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
