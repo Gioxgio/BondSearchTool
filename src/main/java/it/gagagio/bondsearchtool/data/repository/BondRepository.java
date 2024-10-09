@@ -31,4 +31,8 @@ public interface BondRepository extends JpaRepository<BondEntity, String> {
     List<BondEntity> findValidGovernmentBonds();
 
     int removeByIsinNotIn(final Collection<String> isins);
+
+    @Modifying
+    @Query("UPDATE bond b SET b.coupon = :coupon WHERE b.isin = :isin")
+    int updateCoupon(final String isin, final int coupon);
 }
