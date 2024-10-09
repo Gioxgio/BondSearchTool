@@ -3,6 +3,7 @@ package it.gagagio.bondsearchtool.data.repository;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.Instant;
@@ -20,6 +21,7 @@ public interface BondRepository extends JpaRepository<BondEntity, String> {
     @Query("SELECT b FROM bond b WHERE" +
             " (b.type IS NULL" +
             " OR b.country IS NULL" +
+            " OR b.coupon IS NULL" +
             " OR b.maturityAt IS NULL AND NOT b.perpetual)" +
             " AND b.error IS NULL")
     List<BondEntity> findBondsToUpdate(final Limit limit);

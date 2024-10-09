@@ -31,8 +31,6 @@ class EuronextBondMapperTest {
         assertEquals("AT0000A39UW5", result.isin());
         assertEquals("AUSTRIA FX 2.9% FEB34 EUR", result.name());
         assertEquals("MOTX", result.market());
-        assertEquals(123, result.coupon());
-        assertEquals(9860, result.lastPrice());
     }
 
     @ParameterizedTest

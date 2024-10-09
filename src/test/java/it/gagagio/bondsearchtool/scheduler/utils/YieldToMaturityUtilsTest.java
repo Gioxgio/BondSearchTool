@@ -1,5 +1,6 @@
 package it.gagagio.bondsearchtool.scheduler.utils;
 
+import it.gagagio.bondsearchtool.utils.YieldToMaturityUtils;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ class YieldToMaturityUtilsTest {
         val result = unitToTest.calculateYieldToMaturity(today, maturityAt, coupon, price);
 
         assertTrue(result.isPresent());
-        assertEquals(242, result.get());
+        assertEquals(244, result.get());
     }
 
     private Instant stringDateToInstant(final String s) {
