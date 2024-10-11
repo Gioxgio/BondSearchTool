@@ -31,7 +31,7 @@ import java.util.Optional;
 public class Euronext {
 
     private static final String BASE_URL = "https://live.euronext.com/en/";
-    private static final int LENGTH = 5000;
+    private static final int LENGTH = 4000;
     private static final List<String> MARKETS = List.of("ALXB", "ALXL", "ALXP", "XPAR", "XAMS", "XBRU", "XLIS", "XMLI", "MLXB", "ENXB", "ENXL", "TNLA", "TNLB", "XLDN", "XHFT", "VPXB", "XOSL", "XOAM", "EXGM", "ETLX", "MOTX", "XMOT");
 
     private final EuronextBondMapper euronextBondMapper;

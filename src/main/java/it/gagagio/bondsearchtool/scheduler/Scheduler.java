@@ -23,7 +23,7 @@ public class Scheduler {
     @Scheduled(fixedDelay = 5000)
     public void executeJobs() {
 
-        val jobs = jobRepository.findAllByNextExecutionDateBefore(Instant.now());
+        val jobs = jobRepository.findAllByNextExecutionDateBeforeOrderByNextExecutionDate(Instant.now());
 
         jobs.forEach(this::processJob);
     }

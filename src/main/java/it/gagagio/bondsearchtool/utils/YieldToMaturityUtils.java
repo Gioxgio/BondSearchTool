@@ -18,7 +18,7 @@ public class YieldToMaturityUtils {
      * Assertions
      * A year is made up of 360 days
      * Rounding is done at 4th decimal digit, rounding mode is half down
-     * [Annual Coupon + (FV – PV) ÷ Number of Compounding Periods)] ÷ [(FV + PV) ÷ 2]
+     * [Annual Coupon + (FV – PV) ÷ Number of Compounding Periods] ÷ [(FV + PV) ÷ 2]
      * [coupon + (100 - lastPrice) / now()-maturityAt] / [(100 + lastPrice) / 2]
      */
     public Optional<Integer> calculateYieldToMaturity(final Instant today, final Instant maturityAt, final Integer coupon, final Integer lastPrice) {

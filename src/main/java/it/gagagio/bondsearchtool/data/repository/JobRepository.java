@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface JobRepository extends JpaRepository<JobEntity, String> {
 
-    List<JobEntity> findAllByNextExecutionDateBefore(Instant date);
+    List<JobEntity> findAllByNextExecutionDateBeforeOrderByNextExecutionDate(Instant date);
 }
-
