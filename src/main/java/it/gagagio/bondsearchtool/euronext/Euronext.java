@@ -81,6 +81,17 @@ public class Euronext {
             }
         }
 
+        if (bond.getType() == null) {
+            val info = getInfo(isin, market);
+            val type = info.flatMap(euronextBondMapper::getTypeFromHtml);
+            if (type.isPresent()) {
+                bond.setType(type.get().toBontType());
+            } else {
+                bond.setError(BondField.TYPE);
+                return;
+            }
+        }
+
         if (bond.getCoupon() == null) {
             val couponInfo = getCouponInfo(isin, market);
             val coupon = couponInfo.flatMap(html -> euronextBondMapper.getCouponFromHtml(html, market));
@@ -110,21 +121,14 @@ public class Euronext {
             }
         }
 
-        if (bond.getType() == null) {
-            val info = getInfo(isin, market);
-            val type = info.flatMap(euronextBondMapper::getTypeFromHtml);
-            if (type.isPresent()) {
-                bond.setType(type.get().toBontType());
-            } else {
-                bond.setError(BondField.TYPE);
-                return;
-            }
-        }
-
         updateDynamicFields(bond);
     }
 
     public void updateDynamicFields(final BondEntity bond) {
+
+        if (bond.isPerpetual()) {
+            return;
+        }
 
         val isin = bond.getIsin();
         val market = bond.getMarket();
@@ -135,11 +139,8 @@ public class Euronext {
         if (lastPrice.isPresent()) {
 
             bond.setLastPrice(lastPrice.get());
-
-            if (!bond.isPerpetual()) {
-                yieldToMaturityUtils.calculateYieldToMaturity(Instant.now(), bond.getMaturityAt(), bond.getCoupon(), bond.getLastPrice())
-                        .ifPresent(bond::setYieldToMaturity);
-            }
+            yieldToMaturityUtils.calculateYieldToMaturity(Instant.now(), bond.getMaturityAt(), bond.getCoupon(), bond.getLastPrice())
+                    .ifPresent(bond::setYieldToMaturity);
         }
 
         bond.setLastModifiedAt(Instant.now());
@@ -167,13 +168,13 @@ public class Euronext {
         }
     }
 
-    private Optional<Document> getCouponInfo(final String isin, final String market) {
-        val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_couponinfo_block".formatted(BASE_URL, isin, market);
+    private Optional<Document> getDetailedQuote(final String isin, final String market) {
+        val url = "%sajax/getDetailedQuote/%s-%s".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 
-    private Optional<Document> getDetailedQuote(final String isin, final String market) {
-        val url = "%sajax/getDetailedQuote/%s-%s".formatted(BASE_URL, isin, market);
+    private Optional<Document> getCouponInfo(final String isin, final String market) {
+        val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_couponinfo_block".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 

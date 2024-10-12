@@ -18,7 +18,7 @@ public enum EuronextType {
             "Financial Bonds",
             "Infrastructure Bonds",
             "Medium Term Notes", "Miscellaneous Credit Linked",
-            "Ob Bank And Insurance Bonds", "Ob Convertible Bonds", "Ob Covered Bonds", "Ob Covered Bonds Benchmark", "Ob Esg Bonds", "Ob Government Owned Enterprises Bonds", "Ob Industry And Commercial Bonds", "Ob Mortgage Bank Bonds", "Ob Perpetual Hybrid 1", "Ob Senior Preferred Bonds", "Ob Subordinated Bonds", "Other Debt Instruments",
+            "Ob Bank And Insurance Bonds", "Ob Convertible Bonds", "Ob Covered Bonds", "Ob Covered Bonds Benchmark", "Ob Esg Bonds", "Ob Government Owned Enterprises Bonds", "Ob Industry And Commercial Bonds", "Ob Loan Certificates", "Ob Mortgage Bank Bonds", "Ob Perpetual Hybrid 1", "Ob Senior Preferred Bonds", "Ob Subordinated Bonds", "Other Debt Instruments",
             "Saving Certificates", "Subordinated Securities", "Supranational/Agency")),
     GOVERNMENT(List.of("Abm Municipal Bonds",
             "Belgian Government Bonds", "Belgian Government Bonds (Linear Bonds)", "Belgian Government Bonds (Treasury Bills)", "Bobl", "Bund", "Bot", "Btp", "Btp Inflation", "Btp Italia", "Btp Futura", "Btp Valore",

@@ -39,7 +39,7 @@ class EuronextBondMapperTest {
 
         val html = getCouponInfo(number);
 
-        val result = unitToTest.getCouponFromHtml(html);
+        val result = unitToTest.getCouponFromHtml(html, "MOTX");
 
         assertTrue(result.isPresent());
         assertEquals(expected, result.get());
@@ -54,6 +54,17 @@ class EuronextBondMapperTest {
 
         assertTrue(result.isPresent());
         assertEquals(BondCountry.FR, result.get());
+    }
+
+    @Test
+    void getLastPriceFromHtml_success() {
+
+        val html = getLastPrice();
+
+        val result = unitToTest.getLastPriceFromHtml(html);
+
+        assertTrue(result.isPresent());
+        assertEquals(9391, result.get());
     }
 
     @Test
@@ -300,6 +311,177 @@ class EuronextBondMapperTest {
                       <div class="card-body">
                         <p class="issuerName-row"><span class="issuerName-column-left">Issuer name : </span> <span class="issuerName-column-right"><strong>CAISSE FSE FINANCEMENT LOCAL</strong></span></p>        <p>Issuer Type :  <strong>Other</strong></p>        <p>Issuer country :  <strong>FRA</strong></p>      </div>
                     </div>
+                """);
+    }
+
+    private Document getLastPrice() {
+        return Jsoup.parse("""
+                <div class="bg-ui-grey-1 pt-4">
+                    <div class="container">
+                        <div class="row data-header__out">
+                            <div class="col">
+                                <h1 class="display-6 text-white" id="header-instrument-name">
+                                    <strong>CNP TSDI 6,5 3+TV</strong>
+                                </h1>
+                            </div>
+                            <div
+                                class="col text-uppercase text-white text-right font-weight-bold x-small address d-flex flex-column pt-2 ">
+                                <div>
+                                    <div>
+                                        <p class="address__text  address__text-sans-line ">
+                                            Euronext Paris
+                                            Other Markets:&nbsp;
+                                            Amsterdam
+                                            <br>FR0010167247
+                									-
+                																			Bond
+                                            <br>CNP ASSURANCES
+                                            <br>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <div class="enx-symbol-group">
+                                            <div class="enx-symbol-top-custom bg-brand-spring-green enx-symbol-length-5">
+                                                CNPAP</div>
+                
+                                            <div class="enx-symbol-bottom bg-brand-teal-green"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>
+                                    <span class="d-inline-block">
+                										<strong class="pl-2"><a href="/en/product/index/FR0003500008-XPAR" style="text-decoration:none !important;color:#fff !important;">CAC 40</a></strong>
+                										0.39%
+                																					<svg viewbox="0 0 24 24" width="12" height="9" class="text-brand-spring-green">
+                												<use xlink:href="/themes/custom/euronext_live/frontend-library/public/assets//spritemap.svg#index-up"></use>
+                											</svg>
+                																			</span>
+                                    <span class="d-inline-block">
+                										<strong class="pl-2"><a href="/en/product/index/FR0003999481-XPAR" style="text-decoration:none !important;color:#fff !important;">SBF 120</a></strong>
+                										0.37%
+                																					<svg viewbox="0 0 24 24" width="12" height="9" class="text-brand-spring-green">
+                												<use xlink:href="/themes/custom/euronext_live/frontend-library/public/assets//spritemap.svg#index-up"></use>
+                											</svg>
+                																			</span>
+                                    <span class="d-inline-block">
+                										<strong class="pl-2"><a href="/en/product/index/EURUSDFLIT-WFORX" style="text-decoration:none !important;color:#fff !important;">EUR / USD</a></strong>
+                										0.41%
+                																					<svg viewbox="0 0 24 24" width="12" height="9" class="text-brand-spring-green">
+                												<use xlink:href="/themes/custom/euronext_live/frontend-library/public/assets//spritemap.svg#index-up"></use>
+                											</svg>
+                																			</span>
+                                    <span class="d-inline-block">
+                										<strong class="pl-2"><a href="/en/product/index/EURGBPFLIT-WFORX" style="text-decoration:none !important;color:#fff !important;">EUR / GBP</a></strong>
+                										0.11%
+                																					<svg viewbox="0 0 24 24" width="12" height="9" class="text-brand-spring-green">
+                												<use xlink:href="/themes/custom/euronext_live/frontend-library/public/assets//spritemap.svg#index-up"></use>
+                											</svg>
+                																			</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="data-header ">
+                            <div class="data-header__row bg-ui-yellow">
+                                <div class="data-header__col data-header__col-left  ">
+                                    <div>
+                                        <div class="col text-ui-grey-0 font-weight-bold data-header-cash ">
+                                            <div class="lastprice_min_height  pb-1 ">
+                                                <span class="data-50 " id="header-instrument-currency">
+                																																							%
+                																																				</span>
+                                                <span class="data-60" id="header-instrument-price">93.91</span>
+                                            </div>
+                                        </div>
+                                        <div class="data-header-last-price-date-time">
+                                            <div class="container d-flex justify-content-between">
+                                                <div class=" text-ui-grey-0 text-left">
+                                                    Last traded price
+                                                </div>
+                                                <div class="ml-2 last-price-date-time text-ui-grey-0 text-right">
+                                                    18/10/2024 - 11:05
+                                                    &nbsp;CET
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mr-0 text-white bg-brand-sky-blue container head_detail head_detail__height">
+                                        <div class="d-flex flex-column">
+                                            <div class=" font-weight-bold text-uppercase ">
+                                                <!-- status CLO -->
+                                                <!-- bookState 1 -->
+                                                <!-- haltReasonKey  -->
+                                            </div>
+                                            <div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="data-header__col data-header__col-right bg-white">
+                                    <div class="data-header__row head_detail_top">
+                                        <div class="col col_head_detail_bottom">
+                                            <div class="">
+                                                <div class="text-ui-grey-1 data-12 font-weight-bold">Since Open</div>
+                                                <span class=" data-24 font-weight-bold mr-2">0.00</span>
+                                                <span class="text-ui-grey-1 mr-2">(0.00%)</span>
+                                            </div>
+                                        </div>
+                                        <div class="col col_head_detail_bottom">
+                                            <div class="mt-auto">
+                                                <div class="text-ui-grey-1 data-12 font-weight-bold">Since Previous Close</div>
+                                                <span class="text-brand-kelly-green data-24 font-weight-bold mr-2">+0.06</span>
+                                                <span class="text-ui-grey-1 mr-2">(+0.06%)</span>
+                                            </div>
+                                        </div>
+                                        <div class="col col_head_detail_closing_price">
+                                            <div class="my-0 ">
+                                                <div class="text-ui-grey-1 data-12 font-weight-bold">Valuation Close</div>
+                                                <span class=" font-weight-bold  data-24 " id="col-header-instrument-currency">
+                  													  														  															%
+                  														  													  												</span>
+                                                <span class=" font-weight-bold data-24" id="col-header-instrument-price">
+                  												</span>
+                                            </div>
+                                            <div class="mt-0">
+                                                <div class="text-ui-grey-1" id="col-header-instrument-closing-price-date-time">
+                                                    18/10/2024 - 17:55
+                                                    &nbsp;CET
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col col_head_detail_logo d-none d-lg-block text-center">
+                                            <div> <img src="/sites/default/files/company_logo/075015.jpg?itok=1675803208 " class="mw-100" alt="image">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="data-header__row head_detail_bottom head_detail__height bg-ui-grey-4">
+                                        <h5 class="col">
+                                            <span class="text-ui-grey-1 data-12 font-weight-bold">Best Bid</span>
+                                            <span>93.91</span>
+                                        </h5>
+                                        <h5 class="col">
+                                            <span class="text-ui-grey-1 data-12 font-weight-bold">Best Ask</span>
+                                            <span>94.60</span>
+                                        </h5>
+                                        <div class="col">
+                                            <span class="text-ui-grey-1 data-10">18/10/2024 - 11:05
+                													&nbsp;CET</span>
+                                        </div>
+                                        <div class="icons__column icons__column--column-direction">
+                                            <ul class="icons__listing">
+                                                <li>
+                                                    <button type="button" class="btn btn-link p-0 ml-auto mr-2" role="button" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-html="true" data-content="1D (1 day) and 5D (5 days) charts represents intraday prices (unadjsted) using a 1 minute resolution.">
+                													<svg viewbox="0 0 24 24" width="24" height="24" role="presentation" class="">
+                														<use xlink:href="/themes/custom/euronext_live/frontend-library/public/assets//spritemap.svg#info"></use>
+                													</svg>
+                												</button>
+                                                </li>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
                 """);
     }
 }
