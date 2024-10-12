@@ -81,6 +81,17 @@ public class Euronext {
             }
         }
 
+        if (bond.getType() == null) {
+            val info = getInfo(isin, market);
+            val type = info.flatMap(euronextBondMapper::getTypeFromHtml);
+            if (type.isPresent()) {
+                bond.setType(type.get().toBontType());
+            } else {
+                bond.setError(BondField.TYPE);
+                return;
+            }
+        }
+
         if (bond.getCoupon() == null) {
             val couponInfo = getCouponInfo(isin, market);
             val coupon = couponInfo.flatMap(html -> euronextBondMapper.getCouponFromHtml(html, market));
@@ -107,17 +118,6 @@ public class Euronext {
                         return;
                     }
                 }
-            }
-        }
-
-        if (bond.getType() == null) {
-            val info = getInfo(isin, market);
-            val type = info.flatMap(euronextBondMapper::getTypeFromHtml);
-            if (type.isPresent()) {
-                bond.setType(type.get().toBontType());
-            } else {
-                bond.setError(BondField.TYPE);
-                return;
             }
         }
 

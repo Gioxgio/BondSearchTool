@@ -66,7 +66,7 @@ public class EuronextBondMapper {
 
     public Optional<Integer> getLastPriceFromHtml(final Document html) {
 
-        val lastPrice = select(html, "#header-instrument-price");
+        val lastPrice = select(html, "#col-header-instrument-price");
 
         return stringToIntegerCents(lastPrice).map(lp -> lp.setScale(0, RoundingMode.HALF_UP).intValue());
     }
