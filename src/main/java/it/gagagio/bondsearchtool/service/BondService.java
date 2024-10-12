@@ -1,7 +1,5 @@
 package it.gagagio.bondsearchtool.service;
 
-import it.gagagio.bondsearchtool.controller.mapper.BondResponseMapper;
-import it.gagagio.bondsearchtool.controller.response.CountryResponse;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import it.gagagio.bondsearchtool.data.repository.BondRepository;
 import it.gagagio.bondsearchtool.euronext.Euronext;
@@ -21,15 +19,14 @@ import java.util.List;
 public class BondService {
 
     private final BondRepository bondRepository;
-    private final BondResponseMapper bondResponseMapper;
     private final Euronext euronext;
 
     public List<BondEntity> getBonds() {
         return bondRepository.findValidGovernmentBonds();
     }
 
-    public List<CountryResponse> getCountries() {
-        return Arrays.stream(BondCountry.values()).map(bondResponseMapper::from).toList();
+    public List<BondCountry> getCountries() {
+        return Arrays.stream(BondCountry.values()).toList();
     }
 
     public int updateDynamicFields(final int pageSize) {

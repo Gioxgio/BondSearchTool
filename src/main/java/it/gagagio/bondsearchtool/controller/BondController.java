@@ -1,7 +1,8 @@
 package it.gagagio.bondsearchtool.controller;
 
+import it.gagagio.bondsearchtool.controller.mapper.BondResponseMapper;
+import it.gagagio.bondsearchtool.controller.response.BondResponse;
 import it.gagagio.bondsearchtool.controller.response.CountryResponse;
-import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import it.gagagio.bondsearchtool.service.BondService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,16 +18,17 @@ import java.util.List;
 public class BondController {
 
     private final BondService bondService;
+    private final BondResponseMapper bondResponseMapper;
 
     @CrossOrigin
     @GetMapping
-    public List<BondEntity> getBonds() {
-        return bondService.getBonds();
+    public List<BondResponse> getBonds() {
+        return bondService.getBonds().stream().map(bondResponseMapper::from).toList();
     }
 
     @CrossOrigin
     @GetMapping("/countries")
     public List<CountryResponse> getCountires() {
-        return bondService.getCountries();
+        return bondService.getCountries().stream().map(bondResponseMapper::from).toList();
     }
 }
