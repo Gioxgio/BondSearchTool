@@ -1,8 +1,11 @@
 package it.gagagio.bondsearchtool.service;
 
+import it.gagagio.bondsearchtool.controller.mapper.BondResponseMapper;
+import it.gagagio.bondsearchtool.controller.response.CountryResponse;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import it.gagagio.bondsearchtool.data.repository.BondRepository;
 import it.gagagio.bondsearchtool.euronext.Euronext;
+import it.gagagio.bondsearchtool.model.BondCountry;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.data.domain.Limit;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -17,10 +21,15 @@ import java.util.List;
 public class BondService {
 
     private final BondRepository bondRepository;
+    private final BondResponseMapper bondResponseMapper;
     private final Euronext euronext;
 
     public List<BondEntity> getBonds() {
         return bondRepository.findValidGovernmentBonds();
+    }
+
+    public List<CountryResponse> getCountries() {
+        return Arrays.stream(BondCountry.values()).map(bondResponseMapper::from).toList();
     }
 
     public int updateDynamicFields(final int pageSize) {

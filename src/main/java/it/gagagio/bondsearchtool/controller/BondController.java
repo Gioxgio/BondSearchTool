@@ -1,5 +1,6 @@
 package it.gagagio.bondsearchtool.controller;
 
+import it.gagagio.bondsearchtool.controller.response.CountryResponse;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import it.gagagio.bondsearchtool.service.BondService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,12 @@ public class BondController {
     @CrossOrigin
     @GetMapping
     public List<BondEntity> getBonds() {
-
         return bondService.getBonds();
+    }
+
+    @CrossOrigin
+    @GetMapping("/countries")
+    public List<CountryResponse> getCountires() {
+        return bondService.getCountries();
     }
 }

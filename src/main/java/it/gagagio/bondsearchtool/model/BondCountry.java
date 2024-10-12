@@ -1,5 +1,6 @@
 package it.gagagio.bondsearchtool.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,6 +72,7 @@ public enum BondCountry {
     ZA("ZAF", "South Africa");
 
     private final String a3;
+    @Getter
     private final String name;
 
     public static Optional<BondCountry> from(final String a3) {
