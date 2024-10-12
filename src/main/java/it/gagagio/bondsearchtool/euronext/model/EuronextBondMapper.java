@@ -35,7 +35,7 @@ public class EuronextBondMapper {
                 .build();
     }
 
-    public Optional<Integer> getCouponFromHtml(final Document html) {
+    public Optional<Integer> getCouponFromHtml(final Document html, final String market) {
 
         val frequency = getFrequencyFromHtml(html);
 
@@ -52,7 +52,7 @@ public class EuronextBondMapper {
         val couponMillis = stringToIntegerMillis(coupon);
 
         return couponMillis.map(c -> {
-            BigDecimal result = f.getMultiplier().multiply(c).divide(BigDecimal.valueOf(10), RoundingMode.HALF_UP);
+            BigDecimal result = f.getMultiplier(market).multiply(c).divide(BigDecimal.valueOf(10), RoundingMode.HALF_UP);
             return result.setScale(0, RoundingMode.HALF_UP).intValue();
         });
     }

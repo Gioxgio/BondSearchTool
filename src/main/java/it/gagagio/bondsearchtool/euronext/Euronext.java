@@ -83,7 +83,7 @@ public class Euronext {
 
         if (bond.getCoupon() == null) {
             val couponInfo = getCouponInfo(isin, market);
-            val coupon = couponInfo.flatMap(euronextBondMapper::getCouponFromHtml);
+            val coupon = couponInfo.flatMap(html -> euronextBondMapper.getCouponFromHtml(html, market));
             if (coupon.isPresent()) {
                 bond.setCoupon(coupon.get());
             } else {
