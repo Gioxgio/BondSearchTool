@@ -40,6 +40,10 @@ public class ApplyCorrections implements JobRunner {
                 }
                 val correction = correctionOptional.get();
 
+                if (correction.country() != null) {
+                    bond.setCountry(correction.country());
+                }
+
                 if (correction.coupon() != null) {
                     bond.setCoupon(correction.coupon());
                 }
