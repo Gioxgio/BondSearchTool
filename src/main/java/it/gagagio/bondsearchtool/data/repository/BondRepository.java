@@ -19,16 +19,10 @@ public interface BondRepository extends JpaRepository<BondEntity, String> {
 
     Set<BondEntity> findByIsinIn(final Collection<String> isins);
 
-    @Query("SELECT b FROM bond b WHERE" +
-            " (b.type IS NULL" +
-            " OR b.country IS NULL" +
-            " OR b.coupon IS NULL" +
-            " OR b.maturityAt IS NULL AND NOT b.perpetual)" +
-            " AND b.error IS NULL")
+    @Query(BondQueries.BONDS_TO_UPDATE)
     List<BondEntity> findBondsToUpdate(final Limit limit);
 
-    // @Query("SELECT b FROM bond b WHERE b.type = 'GOVERNMENT' AND b.yieldToMaturity IS NOT NULL AND b.yieldToMaturity > 0")
-    @Query("SELECT b FROM bond b")
+    @Query(BondQueries.VALID_BONDS)
     List<BondEntity> findValidGovernmentBonds();
 
     int removeByIsinNotIn(final Collection<String> isins);
