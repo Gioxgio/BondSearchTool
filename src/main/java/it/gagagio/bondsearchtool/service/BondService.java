@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -22,11 +21,11 @@ public class BondService {
     private final Euronext euronext;
 
     public List<BondEntity> getBonds() {
-        return bondRepository.findValidGovernmentBonds();
+        return bondRepository.findValidBonds();
     }
 
     public List<BondCountry> getCountries() {
-        return Arrays.stream(BondCountry.values()).toList();
+        return bondRepository.findValidBondsCountries();
     }
 
     public int updateDynamicFields(final int pageSize) {

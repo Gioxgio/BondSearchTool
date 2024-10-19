@@ -1,6 +1,7 @@
 package it.gagagio.bondsearchtool.data.repository;
 
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
+import it.gagagio.bondsearchtool.model.BondCountry;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +24,10 @@ public interface BondRepository extends JpaRepository<BondEntity, String> {
     List<BondEntity> findBondsToUpdate(final Limit limit);
 
     @Query(BondQueries.VALID_BONDS)
-    List<BondEntity> findValidGovernmentBonds();
+    List<BondEntity> findValidBonds();
+
+    @Query(BondQueries.VALID_BONDS_COUNTRIES)
+    List<BondCountry> findValidBondsCountries();
 
     int removeByIsinNotIn(final Collection<String> isins);
 }
