@@ -2,8 +2,10 @@ package it.gagagio.bondsearchtool.controller.mapper;
 
 import it.gagagio.bondsearchtool.controller.response.BondResponse;
 import it.gagagio.bondsearchtool.controller.response.CountryResponse;
+import it.gagagio.bondsearchtool.controller.response.MarketResponse;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import it.gagagio.bondsearchtool.model.BondCountry;
+import it.gagagio.bondsearchtool.model.BondMarket;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +15,7 @@ public class BondResponseMapper {
         return BondResponse.builder()
                 .isin(bond.getIsin())
                 .name(bond.getName())
-                .market(bond.getMarket())
+                .market(from(bond.getMarket()))
                 .maturityAt(bond.getMaturityAt())
                 .perpetual(bond.isPerpetual())
                 .coupon(bond.getCoupon())
@@ -26,5 +28,9 @@ public class BondResponseMapper {
 
     public CountryResponse from(final BondCountry country) {
         return new CountryResponse(country.name(), country.getName());
+    }
+
+    public MarketResponse from(final BondMarket market) {
+        return new MarketResponse(market.name(), market.getName());
     }
 }

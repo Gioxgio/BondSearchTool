@@ -2,6 +2,7 @@ package it.gagagio.bondsearchtool.euronext.model;
 
 import it.gagagio.bondsearchtool.model.Bond;
 import it.gagagio.bondsearchtool.model.BondCountry;
+import it.gagagio.bondsearchtool.model.BondMarket;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -22,20 +23,20 @@ import java.util.regex.Pattern;
 @Slf4j
 public class EuronextBondMapper {
 
-    public Bond toBond(final List<String> data) {
+    public Optional<Bond> toBond(final List<String> data) {
 
         val isin = getIsinFromData(data);
         val name = getNameFromData(data);
-        val market = getMarketFromData(data);
+        val marketOptional = getMarketFromData(data);
 
-        return Bond.builder()
+        return marketOptional.map(market -> Bond.builder()
                 .isin(isin)
                 .name(name)
                 .market(market)
-                .build();
+                .build());
     }
 
-    public Optional<Integer> getCouponFromHtml(final Document html, final String market) {
+    public Optional<Integer> getCouponFromHtml(final Document html, final BondMarket market) {
 
         val frequency = getFrequencyFromHtml(html);
 
@@ -126,12 +127,12 @@ public class EuronextBondMapper {
         return executeRegex(row, regex).orElseThrow();
     }
 
-    private String getMarketFromData(final List<String> data) {
+    private Optional<BondMarket> getMarketFromData(final List<String> data) {
 
         val row = data.get(2);
         val regex = ">([^<]*)<";
 
-        return executeRegex(row, regex).orElseThrow();
+        return BondMarket.from(executeRegex(row, regex).orElseThrow());
     }
 
     private Optional<BigDecimal> stringToIntegerCents(String s) {

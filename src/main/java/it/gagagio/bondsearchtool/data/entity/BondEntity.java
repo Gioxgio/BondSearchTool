@@ -3,6 +3,7 @@ package it.gagagio.bondsearchtool.data.entity;
 
 import it.gagagio.bondsearchtool.model.BondCountry;
 import it.gagagio.bondsearchtool.model.BondField;
+import it.gagagio.bondsearchtool.model.BondMarket;
 import it.gagagio.bondsearchtool.model.BondType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,7 +39,8 @@ public class BondEntity {
     private String isin;
     private String name;
     @Id
-    private String market;
+    @Enumerated(EnumType.STRING)
+    private BondMarket market;
     private Instant maturityAt;
     private boolean perpetual;
     private Integer coupon;
@@ -61,5 +63,5 @@ public class BondEntity {
 @Setter
 class BondEntityPrimaryKey implements Serializable {
     private String isin;
-    private String market;
+    private BondMarket market;
 }

@@ -3,6 +3,7 @@ package it.gagagio.bondsearchtool.controller;
 import it.gagagio.bondsearchtool.controller.mapper.BondResponseMapper;
 import it.gagagio.bondsearchtool.controller.response.BondResponse;
 import it.gagagio.bondsearchtool.controller.response.CountryResponse;
+import it.gagagio.bondsearchtool.controller.response.MarketResponse;
 import it.gagagio.bondsearchtool.service.BondService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,5 +31,11 @@ public class BondController {
     @GetMapping("/countries")
     public List<CountryResponse> getCountires() {
         return bondService.getCountries().stream().map(bondResponseMapper::from).toList();
+    }
+
+    @CrossOrigin
+    @GetMapping("/markets")
+    public List<MarketResponse> getMarkets() {
+        return bondService.getMarkets().stream().map(bondResponseMapper::from).toList();
     }
 }

@@ -7,6 +7,7 @@ import it.gagagio.bondsearchtool.euronext.model.BondResponse;
 import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
 import it.gagagio.bondsearchtool.model.Bond;
 import it.gagagio.bondsearchtool.model.BondField;
+import it.gagagio.bondsearchtool.model.BondMarket;
 import it.gagagio.bondsearchtool.utils.YieldToMaturityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,7 +34,6 @@ public class Euronext {
 
     private static final String BASE_URL = "https://live.euronext.com/en/";
     private static final int LENGTH = 4000;
-    private static final List<String> MARKETS = List.of("ALXB", "ALXL", "ALXP", "XPAR", "XAMS", "XBRU", "XLIS", "XMLI", "MLXB", "ENXB", "ENXL", "TNLA", "TNLB", "XLDN", "XHFT", "VPXB", "XOSL", "XOAM", "EXGM", "ETLX", "MOTX", "XMOT");
 
     private final EuronextBondMapper euronextBondMapper;
     private final YieldToMaturityUtils yieldToMaturityUtils;
@@ -56,7 +57,10 @@ public class Euronext {
 
             totalRecords = response.iTotalDisplayRecords();
 
-            bonds.addAll(data.stream().map(euronextBondMapper::toBond).toList());
+            bonds.addAll(data.stream()
+                    .map(euronextBondMapper::toBond)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get).toList());
 
             page++;
             log.debug("{}/{}", bonds.size(), totalRecords);
@@ -126,10 +130,6 @@ public class Euronext {
 
     public void updateDynamicFields(final BondEntity bond) {
 
-        if (bond.isPerpetual()) {
-            return;
-        }
-
         val isin = bond.getIsin();
         val market = bond.getMarket();
 
@@ -149,7 +149,8 @@ public class Euronext {
     private Optional<BondResponse> getBonds(final int page) {
 
         val urlBuilder = Objects.requireNonNull(HttpUrl.parse(BASE_URL + "pd/data/bond")).newBuilder();
-        urlBuilder.addQueryParameter("mics", String.join(",", MARKETS));
+        val markets = Arrays.stream(BondMarket.values()).map(BondMarket::toString).toList();
+        urlBuilder.addQueryParameter("mics", String.join(",", markets));
 
         val body = getBondsBody(page);
 
@@ -168,27 +169,27 @@ public class Euronext {
         }
     }
 
-    private Optional<Document> getDetailedQuote(final String isin, final String market) {
+    private Optional<Document> getDetailedQuote(final String isin, final BondMarket market) {
         val url = "%sajax/getDetailedQuote/%s-%s".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 
-    private Optional<Document> getCouponInfo(final String isin, final String market) {
+    private Optional<Document> getCouponInfo(final String isin, final BondMarket market) {
         val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_couponinfo_block".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 
-    private Optional<Document> getInfo(final String isin, final String market) {
+    private Optional<Document> getInfo(final String isin, final BondMarket market) {
         val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_info_block".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 
-    private Optional<Document> getInstrumentInfo(final String isin, final String market) {
+    private Optional<Document> getInstrumentInfo(final String isin, final BondMarket market) {
         val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_instrumentinfo_block".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }
 
-    private Optional<Document> getIssuerInfo(final String isin, final String market) {
+    private Optional<Document> getIssuerInfo(final String isin, final BondMarket market) {
         val url = "%sajax/getFactsheetInfoBlock/BONDS/%s-%s/fs_issuerinfo_block".formatted(BASE_URL, isin, market);
         return executeGet(url);
     }

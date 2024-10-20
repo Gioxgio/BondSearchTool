@@ -3,6 +3,7 @@ package it.gagagio.bondsearchtool.euronext;
 import it.gagagio.bondsearchtool.euronext.model.EuronextBondMapper;
 import it.gagagio.bondsearchtool.euronext.model.EuronextType;
 import it.gagagio.bondsearchtool.model.BondCountry;
+import it.gagagio.bondsearchtool.model.BondMarket;
 import lombok.val;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,11 +27,13 @@ class EuronextBondMapperTest {
 
         val response = getListEntry();
 
-        val result = unitToTest.toBond(response);
+        val resultOptional = unitToTest.toBond(response);
+        assertTrue(resultOptional.isPresent());
 
+        val result = resultOptional.get();
         assertEquals("AT0000A39UW5", result.isin());
         assertEquals("AUSTRIA FX 2.9% FEB34 EUR", result.name());
-        assertEquals("MOTX", result.market());
+        assertEquals(BondMarket.MOTX, result.market());
     }
 
     @ParameterizedTest
@@ -39,7 +42,7 @@ class EuronextBondMapperTest {
 
         val html = getCouponInfo(number);
 
-        val result = unitToTest.getCouponFromHtml(html, "MOTX");
+        val result = unitToTest.getCouponFromHtml(html, BondMarket.MOTX);
 
         assertTrue(result.isPresent());
         assertEquals(expected, result.get());
