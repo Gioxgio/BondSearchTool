@@ -3,6 +3,7 @@ package it.gagagio.bondsearchtool.model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.util.Optional;
 
@@ -76,8 +77,8 @@ public enum BondCountry {
     private final String name;
 
     public static Optional<BondCountry> from(final String a3) {
-        for (final BondCountry value : values()) {
 
+        for (val value : values()) {
             if (value.a3.contains(a3)) {
                 return Optional.of(value);
             }

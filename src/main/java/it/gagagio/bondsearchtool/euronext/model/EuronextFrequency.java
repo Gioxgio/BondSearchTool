@@ -1,10 +1,11 @@
 package it.gagagio.bondsearchtool.euronext.model;
 
+import it.gagagio.bondsearchtool.model.BondMarket;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -22,8 +23,7 @@ public enum EuronextFrequency {
 
     public static Optional<EuronextFrequency> from(final String label) {
 
-        for (EuronextFrequency value : values()) {
-
+        for (val value : values()) {
             if (value.label.equals(label)) {
                 return Optional.of(value);
             }
@@ -34,11 +34,8 @@ public enum EuronextFrequency {
         return Optional.empty();
     }
 
-    public BigDecimal getMultiplier(final String market) {
-
-        final List<String> MARKETS_WITH_ANNUALISED_COUPON = List.of("ALXP", "ENXL", "XAMS", "XBRU", "XLIS", "XMLI", "XOAM", "XOSL", "XPAR");
-
-        return MARKETS_WITH_ANNUALISED_COUPON.contains(market) ?
+    public BigDecimal getMultiplier(final BondMarket market) {
+        return market.isAnnualisedCoupon() ?
                 BigDecimal.valueOf(1) :
                 this.multiplier;
     }

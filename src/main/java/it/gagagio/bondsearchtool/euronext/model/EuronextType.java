@@ -3,6 +3,7 @@ package it.gagagio.bondsearchtool.euronext.model;
 import it.gagagio.bondsearchtool.model.BondType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +35,7 @@ public enum EuronextType {
 
     public static Optional<EuronextType> from(final String subtype) {
 
-        for (EuronextType value : values()) {
-
+        for (val value : values()) {
             if (value.subtypes.contains(subtype)) {
                 return Optional.of(value);
             }
