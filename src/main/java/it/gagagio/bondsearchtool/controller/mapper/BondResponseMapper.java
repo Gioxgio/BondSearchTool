@@ -8,6 +8,9 @@ import it.gagagio.bondsearchtool.model.BondCountry;
 import it.gagagio.bondsearchtool.model.BondMarket;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @Component
 public class BondResponseMapper {
 
@@ -18,12 +21,16 @@ public class BondResponseMapper {
                 .market(from(bond.getMarket()))
                 .maturityAt(bond.getMaturityAt())
                 .perpetual(bond.isPerpetual())
-                .coupon(bond.getCoupon())
-                .lastPrice(bond.getLastPrice())
+                .coupon(from(bond.getCoupon()))
+                .lastPrice(from(bond.getLastPrice()))
                 .country(from(bond.getCountry()))
-                .yieldToMaturity(bond.getYieldToMaturity())
+                .yieldToMaturity(from(bond.getYieldToMaturity()))
                 .type(bond.getType())
                 .build();
+    }
+
+    public BigDecimal from(final int number) {
+        return BigDecimal.valueOf(number).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_DOWN);
     }
 
     public CountryResponse from(final BondCountry country) {

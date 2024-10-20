@@ -484,7 +484,7 @@ class EuronextBondMapperTest {
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
                 """);
     }
 }
