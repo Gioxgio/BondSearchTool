@@ -66,7 +66,6 @@ public class BondQueries {
             " AND (b.country <> '" + "PT" + "' OR (b.name NOT LIKE 'OTRV%' AND b.name NOT LIKE 'PORTUGAL TV%'))" +
             // Government bonds
             // ALXB - 2 = ALXP - 3 = XMLI - 3 = XOAM - 1 =
-            " AND b.lastModifiedAt > CURDATE()" +
             " AND b.lastPrice <> 10000" +
             " AND b.market IN ('ETLX', 'MOTX', 'XAMS', 'XBRU', 'XLIS', 'XMOT', 'XPAR')" +
             " AND b.type = '" + "GOVERNMENT" + "'" +

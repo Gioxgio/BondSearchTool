@@ -134,11 +134,9 @@ public class Euronext {
         val market = bond.getMarket();
 
         val detailedQuote = getDetailedQuote(isin, market);
-        Optional<Integer> lastPrice = detailedQuote.flatMap(euronextBondMapper::getLastPriceFromHtml);
+        detailedQuote.flatMap(euronextBondMapper::getLastPriceFromHtml).ifPresent(bond::setLastPrice);
 
-        if (lastPrice.isPresent()) {
-
-            bond.setLastPrice(lastPrice.get());
+        if(bond.getLastPrice() != null) {
             yieldToMaturityUtils.calculateYieldToMaturity(Instant.now(), bond.getMaturityAt(), bond.getCoupon(), bond.getLastPrice())
                     .ifPresent(bond::setYieldToMaturity);
         }
