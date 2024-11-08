@@ -49,7 +49,7 @@ public class Euronext {
             val responseOptional = getBonds(page);
 
             if (responseOptional.isEmpty()) {
-                return bonds;
+                continue;
             }
 
             val response = responseOptional.get();
@@ -136,7 +136,7 @@ public class Euronext {
         val detailedQuote = getDetailedQuote(isin, market);
         detailedQuote.flatMap(euronextBondMapper::getLastPriceFromHtml).ifPresent(bond::setLastPrice);
 
-        if(bond.getLastPrice() != null) {
+        if (bond.getLastPrice() != null) {
             yieldToMaturityUtils.calculateYieldToMaturity(Instant.now(), bond.getMaturityAt(), bond.getCoupon(), bond.getLastPrice())
                     .ifPresent(bond::setYieldToMaturity);
         }
