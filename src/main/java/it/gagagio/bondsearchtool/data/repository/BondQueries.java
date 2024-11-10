@@ -21,9 +21,8 @@ public class BondQueries {
             " AND (b.country <> '" + "GR" + "' OR b.name NOT LIKE 'GGB TV%')" +
             " AND (b.country <> '" + "IT" + "' OR (b.name NOT LIKE 'BTP COUPON STRIP%' AND b.name NOT LIKE 'BTP ITALIA%' AND b.name NOT LIKE 'BTPI%' AND b.name NOT LIKE 'CCT%'))" +
             " AND (b.country <> '" + "PT" + "' OR (b.name NOT LIKE 'OTRV%' AND b.name NOT LIKE 'PORTUGAL TV%'))" +
-            // Government bonds
             // ALXB - 2 = ALXP - 3 = XMLI - 3 = XOAM - 1 =
-            " AND b.lastModifiedAt > CURDATE()" +
+            " AND TIMESTAMPDIFF(HOUR, b.lastModifiedAt, CURDATE()) < 48" + // Get bonds updated in the past 2 days
             " AND b.lastPrice <> 10000" +
             " AND b.market IN ('ETLX', 'MOTX', 'XAMS', 'XBRU', 'XLIS', 'XMOT', 'XPAR')" +
             " AND b.type = '" + "GOVERNMENT" + "'" +
