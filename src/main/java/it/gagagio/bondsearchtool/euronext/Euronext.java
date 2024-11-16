@@ -38,19 +38,30 @@ public class Euronext {
     private final EuronextBondMapper euronextBondMapper;
     private final YieldToMaturityUtils yieldToMaturityUtils;
 
-    public List<Bond> getBondsList() {
+    public Optional<List<Bond>> getBondsList() {
 
+        var attempt = 0;
         var page = 0;
         var totalRecords = 0;
-        List<Bond> bonds = new ArrayList<>();
+        final List<Bond> bonds = new ArrayList<>();
 
         do {
 
             val responseOptional = getBonds(page);
 
             if (responseOptional.isEmpty()) {
+                try {
+                    Thread.sleep(5_000);
+                } catch (InterruptedException ignored) {
+                }
+                attempt++;
+                if (attempt > 5) {
+                    return Optional.empty();
+                }
                 continue;
             }
+
+            attempt = 0;
 
             val response = responseOptional.get();
             val data = response.aaData();
@@ -66,7 +77,7 @@ public class Euronext {
             log.debug("{}/{}", bonds.size(), totalRecords);
         } while (LENGTH * page < totalRecords);
 
-        return bonds;
+        return Optional.of(bonds);
     }
 
     public void updateStaticFields(final BondEntity bond) {

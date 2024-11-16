@@ -23,7 +23,11 @@ public class ScraperService {
     public void updateBondList() {
 
         log.info("Getting bonds from Euronext");
-        val bonds = euronext.getBondsList();
+        val bondsOptional = euronext.getBondsList();
+        if (bondsOptional.isEmpty()) {
+            return;
+        }
+        val bonds = bondsOptional.get();
         val newIsins = bonds.stream().map(Bond::isin).toList();
 
         log.info("Getting existing bonds");
