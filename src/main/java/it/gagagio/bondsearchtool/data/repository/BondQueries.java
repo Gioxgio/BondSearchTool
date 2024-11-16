@@ -27,6 +27,7 @@ public class BondQueries {
             " AND b.market IN ('ETLX', 'MOTX', 'XAMS', 'XBRU', 'XLIS', 'XMOT', 'XPAR')" +
             " AND b.type = '" + "GOVERNMENT" + "'" +
             " AND b.yieldToMaturity > 0" +
+            " AND b.yieldToMaturity < 1500" +
             " ORDER BY b.yieldToMaturity DESC";
 
     public static final String VALID_BONDS_COUNTRIES = "SELECT b.country FROM bond b WHERE" +
