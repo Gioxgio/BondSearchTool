@@ -44,11 +44,12 @@ public class BondQueries {
             " AND (b.country <> '" + "PT" + "' OR (b.name NOT LIKE 'OTRV%' AND b.name NOT LIKE 'PORTUGAL TV%'))" +
             // Government bonds
             // ALXB - 2 = ALXP - 3 = XMLI - 3 = XOAM - 1 =
-            " AND b.lastModifiedAt > CURDATE()" +
+            " AND TIMESTAMPDIFF(HOUR, b.lastModifiedAt, CURDATE()) < 48" + // Get bonds updated in the past 2 days
             " AND b.lastPrice <> 10000" +
             " AND b.market IN ('ETLX', 'MOTX', 'XAMS', 'XBRU', 'XLIS', 'XMOT', 'XPAR')" +
             " AND b.type = '" + "GOVERNMENT" + "'" +
             " AND b.yieldToMaturity > 0" +
+            " AND b.yieldToMaturity < 1500" +
             " GROUP BY b.country" +
             " ORDER BY b.country";
 
@@ -66,10 +67,12 @@ public class BondQueries {
             " AND (b.country <> '" + "PT" + "' OR (b.name NOT LIKE 'OTRV%' AND b.name NOT LIKE 'PORTUGAL TV%'))" +
             // Government bonds
             // ALXB - 2 = ALXP - 3 = XMLI - 3 = XOAM - 1 =
+            " AND TIMESTAMPDIFF(HOUR, b.lastModifiedAt, CURDATE()) < 48" + // Get bonds updated in the past 2 days
             " AND b.lastPrice <> 10000" +
             " AND b.market IN ('ETLX', 'MOTX', 'XAMS', 'XBRU', 'XLIS', 'XMOT', 'XPAR')" +
             " AND b.type = '" + "GOVERNMENT" + "'" +
             " AND b.yieldToMaturity > 0" +
+            " AND b.yieldToMaturity < 1500" +
             " GROUP BY b.market" +
             " ORDER BY b.market";
 }
