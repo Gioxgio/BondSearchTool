@@ -1,6 +1,5 @@
 package it.gagagio.bondsearchtool.euronext;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gagagio.bondsearchtool.data.entity.BondEntity;
 import it.gagagio.bondsearchtool.euronext.model.BondResponse;
@@ -35,6 +34,8 @@ public class Euronext {
     private static final String BASE_URL = "https://live.euronext.com/en/";
     private static final int LENGTH = 4000;
 
+    private final OkHttpClient okHttpClient;
+    private final ObjectMapper objectMapper;
     private final EuronextBondMapper euronextBondMapper;
     private final YieldToMaturityUtils yieldToMaturityUtils;
 
@@ -173,9 +174,7 @@ public class Euronext {
                 .post(body)
                 .build();
 
-        val client = new OkHttpClient();
-        try (val responseBody = client.newCall(request).execute().body()) {
-            val objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try (val responseBody = okHttpClient.newCall(request).execute().body()) {
             return Optional.of(objectMapper.readValue(responseBody.string(), BondResponse.class));
         } catch (Exception e) {
             log.error("Error {} retrieving url: {}", e.getMessage(), urlBuilder.build());
@@ -224,8 +223,7 @@ public class Euronext {
                 .get()
                 .build();
 
-        val client = new OkHttpClient();
-        try (val responseBody = client.newCall(request).execute().body()) {
+        try (val responseBody = okHttpClient.newCall(request).execute().body()) {
             return Optional.of(Jsoup.parse(responseBody.string()));
         } catch (Exception e) {
             log.error("Error {} retrieving url: {}", e.getMessage(), url);
